@@ -421,7 +421,7 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at -12.7 17.78 0)
+				(at -12.7 3.81 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -436,7 +436,7 @@
 					)
 				)
 			)
-			(property "Footprint" "Seeed_Studio_XIAO_Series:XIAO-ESP32-C6-SMD"
+			(property "Footprint" "ff-expander:XIAO_ESP32C6_HandSolder"
 				(at 0 0 0)
 				(effects
 					(font
@@ -454,7 +454,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Seeed Studio XIAO ESP32-C6 (pads 15-24 on the underside)"
+			(property "Description" "Seeed Studio XIAO ESP32-C6, castellated; battery pads 23/24 on the underside"
 				(at 0 0 0)
 				(effects
 					(font
@@ -465,7 +465,7 @@
 			)
 			(symbol "XIAO_ESP32C6_0_1"
 				(rectangle
-					(start -12.7 12.7)
+					(start -12.7 2.54)
 					(end 12.7 -20.32)
 					(stroke
 						(width 0.254)
@@ -722,150 +722,6 @@
 						)
 					)
 					(number "8"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -8.89 15.24 270)
-					(length 2.54)
-					(name "MTDI"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "15"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 15.24 270)
-					(length 2.54)
-					(name "MTDO"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "16"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -3.81 15.24 270)
-					(length 2.54)
-					(name "EN"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "17"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -1.27 15.24 270)
-					(length 2.54)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "18"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 1.27 15.24 270)
-					(length 2.54)
-					(name "MTMS"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "19"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 15.24 270)
-					(length 2.54)
-					(name "MTCK"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "20"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 6.35 15.24 270)
-					(length 2.54)
-					(name "BOOT"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "21"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 8.89 15.24 270)
-					(length 2.54)
-					(name "3V3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "22"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1769,6 +1625,105 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Mechanical:MountingHole"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "H"
+				(at 0 5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MountingHole"
+				(at 0 3.175 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Mounting Hole without connection"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "mounting hole"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "MountingHole*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "MountingHole_0_1"
+				(circle
+					(center 0 0)
+					(radius 1.27)
+					(stroke
+						(width 1.27)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
@@ -2152,7 +2107,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Seeed_Studio_XIAO_Series:XIAO-ESP32-C6-SMD"
+		(property "Footprint" "ff-expander:XIAO_ESP32C6_HandSolder"
 			(at 50.8 132.08 0)
 			(effects
 				(font
@@ -2211,30 +2166,6 @@
 		)
 		(pin "8"
 			(uuid "c4ef6358-2818-5679-92eb-761da06c90e4")
-		)
-		(pin "15"
-			(uuid "964227cf-42d0-5e42-ad34-aeb44edf5491")
-		)
-		(pin "16"
-			(uuid "cc76aede-e130-53e2-9b12-d889b1aa0eac")
-		)
-		(pin "17"
-			(uuid "dd2557db-ac70-5eae-a955-3535f832f327")
-		)
-		(pin "18"
-			(uuid "83f9d90c-1df0-5e92-835d-3927392dd37f")
-		)
-		(pin "19"
-			(uuid "72230a9d-d265-5f48-919d-bcd271c0c462")
-		)
-		(pin "20"
-			(uuid "3f231ac8-8bd1-56cb-8eeb-5836d22adf90")
-		)
-		(pin "21"
-			(uuid "0e560eac-378f-5b52-9071-039b302819e0")
-		)
-		(pin "22"
-			(uuid "445cb9d4-8c89-5c77-91fa-5934ad86b7f9")
 		)
 		(pin "23"
 			(uuid "103b800d-9a58-58f5-a54d-de764b031ca2")
@@ -2488,73 +2419,6 @@
 	)
 	(wire
 		(pts
-			(xy 49.53 116.84)
-			(xy 49.53 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "42b0ee71-bd9a-59f2-b3fe-a1a56f117af7")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 49.53 114.3 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(dnp no)
-		(uuid "d6f31329-c0f6-5f2e-8c5f-5a060b3a42c0")
-		(property "Reference" "#PWR05"
-			(at 49.53 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 49.53 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 49.53 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 49.53 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "380fadac-fd8d-5831-8494-32af995dd5c3")
-		)
-		(instances
-			(project "ff-expander-tx"
-				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR05")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
 			(xy 53.34 154.94)
 			(xy 53.34 157.48)
 		)
@@ -2572,8 +2436,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "19217629-e26e-5426-8702-f654b18e86c1")
-		(property "Reference" "#PWR06"
+		(uuid "d6f31329-c0f6-5f2e-8c5f-5a060b3a42c0")
+		(property "Reference" "#PWR05"
 			(at 53.34 163.83 0)
 			(effects
 				(font
@@ -2609,12 +2473,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "26e71b9a-485c-5855-ba00-dd2609753053")
+			(uuid "380fadac-fd8d-5831-8494-32af995dd5c3")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR06")
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -2660,8 +2524,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "8350806b-0f85-5fb1-9580-b1cd794dd5ac")
-		(property "Reference" "#PWR07"
+		(uuid "19217629-e26e-5426-8702-f654b18e86c1")
+		(property "Reference" "#PWR06"
 			(at 74.93 134.62 90)
 			(effects
 				(font
@@ -2697,12 +2561,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "d557d02b-baf2-569d-958b-3daec338bb1e")
+			(uuid "26e71b9a-485c-5855-ba00-dd2609753053")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR07")
+					(reference "#PWR06")
 					(unit 1)
 				)
 			)
@@ -2727,8 +2591,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "348ccf48-6ec9-5c65-9ef5-366d73995604")
-		(property "Reference" "#PWR08"
+		(uuid "8350806b-0f85-5fb1-9580-b1cd794dd5ac")
+		(property "Reference" "#PWR07"
 			(at 64.77 137.16 90)
 			(effects
 				(font
@@ -2764,44 +2628,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "5a8519a0-4873-5d9b-8323-4120a4c11205")
+			(uuid "d557d02b-baf2-569d-958b-3daec338bb1e")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR08")
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
 		)
-	)
-	(no_connect
-		(at 41.91 116.84)
-		(uuid "6d15ae41-2d46-586a-86c5-fc34d98a8197")
-	)
-	(no_connect
-		(at 44.45 116.84)
-		(uuid "c9c67c37-e74f-5f60-a661-7363bee4bfc4")
-	)
-	(no_connect
-		(at 46.99 116.84)
-		(uuid "d69640cc-5de0-51ff-b9e2-946e08086abb")
-	)
-	(no_connect
-		(at 52.07 116.84)
-		(uuid "44fa9369-9ad1-5414-acbd-76f9ce909da7")
-	)
-	(no_connect
-		(at 54.61 116.84)
-		(uuid "57012ab7-913e-5d53-959c-91b11b8efe01")
-	)
-	(no_connect
-		(at 57.15 116.84)
-		(uuid "baddb93e-67cd-5048-8090-77c88610da74")
-	)
-	(no_connect
-		(at 59.69 116.84)
-		(uuid "271459f1-817f-5e07-93ea-904e6c71a04d")
 	)
 	(symbol
 		(lib_id "Device:R")
@@ -3005,8 +2841,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "ecdcf5bd-62ce-5a65-b02c-f046b6b4a424")
-		(property "Reference" "#PWR09"
+		(uuid "348ccf48-6ec9-5c65-9ef5-366d73995604")
+		(property "Reference" "#PWR08"
 			(at 45.72 203.2 0)
 			(effects
 				(font
@@ -3042,12 +2878,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "0db82891-bfb9-5c56-97f2-e07655b9ab7a")
+			(uuid "5a8519a0-4873-5d9b-8323-4120a4c11205")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR09")
+					(reference "#PWR08")
 					(unit 1)
 				)
 			)
@@ -3153,8 +2989,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "036b989b-6c0d-541b-8452-cbbf360d33a7")
-		(property "Reference" "#PWR10"
+		(uuid "ecdcf5bd-62ce-5a65-b02c-f046b6b4a424")
+		(property "Reference" "#PWR09"
 			(at 60.96 203.2 0)
 			(effects
 				(font
@@ -3190,12 +3026,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "7746e6f0-5746-5585-90e4-07d93eee68ea")
+			(uuid "0db82891-bfb9-5c56-97f2-e07655b9ab7a")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR10")
+					(reference "#PWR09")
 					(unit 1)
 				)
 			)
@@ -3291,8 +3127,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "00ba110c-db41-5e00-a6aa-d72f0f38a9e4")
-		(property "Reference" "#PWR11"
+		(uuid "036b989b-6c0d-541b-8452-cbbf360d33a7")
+		(property "Reference" "#PWR10"
 			(at 127 60.96 0)
 			(effects
 				(font
@@ -3328,12 +3164,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "4fce8cc9-0355-5b04-a1ee-fc9cdb15028b")
+			(uuid "7746e6f0-5746-5585-90e4-07d93eee68ea")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR11")
+					(reference "#PWR10")
 					(unit 1)
 				)
 			)
@@ -3460,8 +3296,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "a8833739-4402-51c4-845e-d3123f396738")
-		(property "Reference" "#PWR12"
+		(uuid "00ba110c-db41-5e00-a6aa-d72f0f38a9e4")
+		(property "Reference" "#PWR11"
 			(at 127 104.14 0)
 			(effects
 				(font
@@ -3497,12 +3333,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "d550aa47-a4d6-5f35-85fa-afcb3ee71109")
+			(uuid "4fce8cc9-0355-5b04-a1ee-fc9cdb15028b")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR12")
+					(reference "#PWR11")
 					(unit 1)
 				)
 			)
@@ -3689,8 +3525,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "044dc006-ef6a-5259-8169-2699306301df")
-		(property "Reference" "#PWR13"
+		(uuid "a8833739-4402-51c4-845e-d3123f396738")
+		(property "Reference" "#PWR12"
 			(at 142.24 60.96 0)
 			(effects
 				(font
@@ -3726,12 +3562,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "0831020a-9d66-5de6-84aa-d0cc243da49f")
+			(uuid "d550aa47-a4d6-5f35-85fa-afcb3ee71109")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR13")
+					(reference "#PWR12")
 					(unit 1)
 				)
 			)
@@ -3858,8 +3694,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "3c72715c-35f2-5904-a864-22be7956de25")
-		(property "Reference" "#PWR14"
+		(uuid "044dc006-ef6a-5259-8169-2699306301df")
+		(property "Reference" "#PWR13"
 			(at 142.24 104.14 0)
 			(effects
 				(font
@@ -3895,12 +3731,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "50325b19-aaec-55d2-9298-d9c6f2f87191")
+			(uuid "0831020a-9d66-5de6-84aa-d0cc243da49f")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR14")
+					(reference "#PWR13")
 					(unit 1)
 				)
 			)
@@ -4087,8 +3923,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "a5dd10b9-1009-5986-b26a-68d20758e74f")
-		(property "Reference" "#PWR15"
+		(uuid "3c72715c-35f2-5904-a864-22be7956de25")
+		(property "Reference" "#PWR14"
 			(at 157.48 60.96 0)
 			(effects
 				(font
@@ -4124,12 +3960,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "0d8c1700-e0bb-5de2-829d-9156436be7a0")
+			(uuid "50325b19-aaec-55d2-9298-d9c6f2f87191")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR15")
+					(reference "#PWR14")
 					(unit 1)
 				)
 			)
@@ -4256,8 +4092,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "3426ee07-d43f-50d9-96dc-a891f8d3d58f")
-		(property "Reference" "#PWR16"
+		(uuid "a5dd10b9-1009-5986-b26a-68d20758e74f")
+		(property "Reference" "#PWR15"
 			(at 157.48 104.14 0)
 			(effects
 				(font
@@ -4293,12 +4129,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "a344b444-6814-5953-956c-befd11867a78")
+			(uuid "0d8c1700-e0bb-5de2-829d-9156436be7a0")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR16")
+					(reference "#PWR15")
 					(unit 1)
 				)
 			)
@@ -4485,8 +4321,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "4a0bc61c-2dce-54a8-b53e-a1fae41bd407")
-		(property "Reference" "#PWR17"
+		(uuid "3426ee07-d43f-50d9-96dc-a891f8d3d58f")
+		(property "Reference" "#PWR16"
 			(at 172.72 60.96 0)
 			(effects
 				(font
@@ -4522,12 +4358,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8e7dba99-55ba-5b2a-b4d6-41cd9ac81a0b")
+			(uuid "a344b444-6814-5953-956c-befd11867a78")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR17")
+					(reference "#PWR16")
 					(unit 1)
 				)
 			)
@@ -4654,8 +4490,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "91ea5ed3-f283-5dab-bbef-9a0c2d85a082")
-		(property "Reference" "#PWR18"
+		(uuid "4a0bc61c-2dce-54a8-b53e-a1fae41bd407")
+		(property "Reference" "#PWR17"
 			(at 172.72 104.14 0)
 			(effects
 				(font
@@ -4691,12 +4527,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "abba3087-3246-586d-9e5f-f39533d92f4d")
+			(uuid "8e7dba99-55ba-5b2a-b4d6-41cd9ac81a0b")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR18")
+					(reference "#PWR17")
 					(unit 1)
 				)
 			)
@@ -4883,8 +4719,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "3a25d53d-e1ef-5bbe-b30e-baf7698d7f5d")
-		(property "Reference" "#PWR19"
+		(uuid "91ea5ed3-f283-5dab-bbef-9a0c2d85a082")
+		(property "Reference" "#PWR18"
 			(at 187.96 60.96 0)
 			(effects
 				(font
@@ -4920,12 +4756,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "f6bedc3a-8210-530a-8429-ae54db0646b0")
+			(uuid "abba3087-3246-586d-9e5f-f39533d92f4d")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR19")
+					(reference "#PWR18")
 					(unit 1)
 				)
 			)
@@ -5052,8 +4888,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "98e6bf6d-5bb4-5dea-a624-4846226a98ec")
-		(property "Reference" "#PWR20"
+		(uuid "3a25d53d-e1ef-5bbe-b30e-baf7698d7f5d")
+		(property "Reference" "#PWR19"
 			(at 187.96 104.14 0)
 			(effects
 				(font
@@ -5089,12 +4925,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "76cc7aaf-6d6d-5317-b9f5-c741aa02f82a")
+			(uuid "f6bedc3a-8210-530a-8429-ae54db0646b0")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR20")
+					(reference "#PWR19")
 					(unit 1)
 				)
 			)
@@ -5281,8 +5117,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "b90f2611-7f21-5f23-97c3-0bf5fffba6bf")
-		(property "Reference" "#PWR21"
+		(uuid "98e6bf6d-5bb4-5dea-a624-4846226a98ec")
+		(property "Reference" "#PWR20"
 			(at 203.2 60.96 0)
 			(effects
 				(font
@@ -5318,12 +5154,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "81b29bb7-2109-5332-ab96-856017bfc09c")
+			(uuid "76cc7aaf-6d6d-5317-b9f5-c741aa02f82a")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR21")
+					(reference "#PWR20")
 					(unit 1)
 				)
 			)
@@ -5450,8 +5286,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "4fc8fd04-0496-5dd1-bf30-47c166850cbe")
-		(property "Reference" "#PWR22"
+		(uuid "b90f2611-7f21-5f23-97c3-0bf5fffba6bf")
+		(property "Reference" "#PWR21"
 			(at 203.2 104.14 0)
 			(effects
 				(font
@@ -5487,12 +5323,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "35b29edb-88c1-5706-b2ac-2253efaeeec0")
+			(uuid "81b29bb7-2109-5332-ab96-856017bfc09c")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR22")
+					(reference "#PWR21")
 					(unit 1)
 				)
 			)
@@ -5679,8 +5515,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "f1326b98-6645-5d4b-ae0f-ff691c1efa5b")
-		(property "Reference" "#PWR23"
+		(uuid "4fc8fd04-0496-5dd1-bf30-47c166850cbe")
+		(property "Reference" "#PWR22"
 			(at 218.44 60.96 0)
 			(effects
 				(font
@@ -5716,12 +5552,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8530e6ca-91c6-547f-a6ed-16385f9dc466")
+			(uuid "35b29edb-88c1-5706-b2ac-2253efaeeec0")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR23")
+					(reference "#PWR22")
 					(unit 1)
 				)
 			)
@@ -5848,8 +5684,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "8fca244d-89ca-5530-9e56-4122a0762528")
-		(property "Reference" "#PWR24"
+		(uuid "f1326b98-6645-5d4b-ae0f-ff691c1efa5b")
+		(property "Reference" "#PWR23"
 			(at 218.44 104.14 0)
 			(effects
 				(font
@@ -5885,12 +5721,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "f350dc4b-a7da-5564-8af8-641225907ff8")
+			(uuid "8530e6ca-91c6-547f-a6ed-16385f9dc466")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR24")
+					(reference "#PWR23")
 					(unit 1)
 				)
 			)
@@ -6077,8 +5913,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "500e7e95-e8b5-5a89-bd50-6d6c021e79ae")
-		(property "Reference" "#PWR25"
+		(uuid "8fca244d-89ca-5530-9e56-4122a0762528")
+		(property "Reference" "#PWR24"
 			(at 233.68 60.96 0)
 			(effects
 				(font
@@ -6114,12 +5950,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "4b9e211d-e7ce-5bda-a566-2e31261868f1")
+			(uuid "f350dc4b-a7da-5564-8af8-641225907ff8")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR25")
+					(reference "#PWR24")
 					(unit 1)
 				)
 			)
@@ -6246,8 +6082,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "d379fe15-f96b-5a2a-a83b-5f8f4c3043ac")
-		(property "Reference" "#PWR26"
+		(uuid "500e7e95-e8b5-5a89-bd50-6d6c021e79ae")
+		(property "Reference" "#PWR25"
 			(at 233.68 104.14 0)
 			(effects
 				(font
@@ -6283,12 +6119,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "564cd251-db85-5e4d-af39-e13d0734d7eb")
+			(uuid "4b9e211d-e7ce-5bda-a566-2e31261868f1")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR26")
+					(reference "#PWR25")
 					(unit 1)
 				)
 			)
@@ -6475,8 +6311,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "6357e9b2-f1bc-5fe0-9d48-a687613e9b75")
-		(property "Reference" "#PWR27"
+		(uuid "d379fe15-f96b-5a2a-a83b-5f8f4c3043ac")
+		(property "Reference" "#PWR26"
 			(at 248.92 60.96 0)
 			(effects
 				(font
@@ -6512,12 +6348,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "e7b00a66-365c-52e3-97b3-52ea73ca1f9a")
+			(uuid "564cd251-db85-5e4d-af39-e13d0734d7eb")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR27")
+					(reference "#PWR26")
 					(unit 1)
 				)
 			)
@@ -6644,8 +6480,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "8dcfc771-f353-5b80-a59b-651e666572f2")
-		(property "Reference" "#PWR28"
+		(uuid "6357e9b2-f1bc-5fe0-9d48-a687613e9b75")
+		(property "Reference" "#PWR27"
 			(at 248.92 104.14 0)
 			(effects
 				(font
@@ -6681,12 +6517,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "b48f2e76-b38f-53ed-9440-39be3aac9d8f")
+			(uuid "e7b00a66-365c-52e3-97b3-52ea73ca1f9a")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR28")
+					(reference "#PWR27")
 					(unit 1)
 				)
 			)
@@ -6873,8 +6709,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "2de3506e-bd70-5470-ac9b-b000cf60df60")
-		(property "Reference" "#PWR29"
+		(uuid "8dcfc771-f353-5b80-a59b-651e666572f2")
+		(property "Reference" "#PWR28"
 			(at 264.16 60.96 0)
 			(effects
 				(font
@@ -6910,12 +6746,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "cbe5ef9b-2c41-50e1-9d30-2cebdf55cfec")
+			(uuid "b48f2e76-b38f-53ed-9440-39be3aac9d8f")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR29")
+					(reference "#PWR28")
 					(unit 1)
 				)
 			)
@@ -7042,8 +6878,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "98bd43a9-f1c6-5c99-b09e-0bdc88a78a02")
-		(property "Reference" "#PWR30"
+		(uuid "2de3506e-bd70-5470-ac9b-b000cf60df60")
+		(property "Reference" "#PWR29"
 			(at 264.16 104.14 0)
 			(effects
 				(font
@@ -7079,12 +6915,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "7303a2b5-10c1-5589-b118-b12e635fa4e7")
+			(uuid "cbe5ef9b-2c41-50e1-9d30-2cebdf55cfec")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR30")
+					(reference "#PWR29")
 					(unit 1)
 				)
 			)
@@ -7517,8 +7353,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "9a7ba425-7b25-5fac-9677-c78fd815ab99")
-		(property "Reference" "#PWR31"
+		(uuid "98bd43a9-f1c6-5c99-b09e-0bdc88a78a02")
+		(property "Reference" "#PWR30"
 			(at 290.83 93.98 90)
 			(effects
 				(font
@@ -7554,16 +7390,235 @@
 			)
 		)
 		(pin "1"
-			(uuid "2120dc37-ba3d-5a37-8400-5a5fb7ffd575")
+			(uuid "7303a2b5-10c1-5589-b118-b12e635fa4e7")
 		)
 		(instances
 			(project "ff-expander-tx"
 				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
-					(reference "#PWR31")
+					(reference "#PWR30")
 					(unit 1)
 				)
 			)
 		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 297.18 160.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "c7d9ed7b-3004-5e75-886f-2e1d460a0c99")
+		(property "Reference" "H1"
+			(at 297.18 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "M2"
+			(at 297.18 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
+			(at 297.18 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 297.18 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "ff-expander-tx"
+				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
+					(reference "H1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 309.88 160.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "5db378ce-1578-5385-827a-eee0430bd471")
+		(property "Reference" "H2"
+			(at 309.88 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "M2"
+			(at 309.88 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
+			(at 309.88 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 309.88 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "ff-expander-tx"
+				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
+					(reference "H2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 322.58 160.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "b18801e0-95ee-5b85-b449-3b7aa80c226b")
+		(property "Reference" "H3"
+			(at 322.58 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "M2"
+			(at 322.58 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
+			(at 322.58 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 322.58 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "ff-expander-tx"
+				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
+					(reference "H3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 335.28 160.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "dbd44f34-f94c-5d08-a3e2-f55524d778f0")
+		(property "Reference" "H4"
+			(at 335.28 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "M2"
+			(at 335.28 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2"
+			(at 335.28 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 335.28 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "ff-expander-tx"
+				(path "/1d3cae4f-5660-56a4-9a87-e44eccb9f5e8"
+					(reference "H4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(text "H1-H4: M2 mounting holes, 45 x 25 mm pattern."
+		(exclude_from_sim no)
+		(at 289.56 170.18 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "984fb8f6-5e74-55f4-803a-96a41b4334cf")
 	)
 	(text "Wheel buttons: each between SWn and GND.\nButtons 0/1 (D1/D2) wake the TX from deep sleep."
 		(exclude_from_sim no)

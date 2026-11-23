@@ -24,7 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OWN_LIB = os.path.join(HERE, "lib", "ff-expander.kicad_sym")
 LOCAL_LIBS = {"ff-expander": OWN_LIB}
 XIAO = "ff-expander:XIAO_ESP32C6"
-XIAO_FP = "Seeed_Studio_XIAO_Series:XIAO-ESP32-C6-SMD"
+XIAO_FP = "ff-expander:XIAO_ESP32C6_HandSolder"
 XH = {2: "B2B", 6: "B6B", 11: "B11B"}
 DEFAULT_FP = {
     "Device:R": "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder",
@@ -51,8 +51,9 @@ def fmt(v):
 
 
 def xiao_symbol():
-    """Our own XIAO ESP32-C6 symbol. Pin numbers match Seeed's
-    XIAO-ESP32-C6-SMD footprint (1-14 edge, 15-22 top pads, 23-24 battery)."""
+    """Our own XIAO ESP32-C6 symbol: 1-14 castellated edge pins, 23/24 the
+    battery pads on the underside (same numbering as Seeed's footprint). The
+    underside JTAG/boot pads (15-22) are omitted: not hand-solderable."""
     eff = lambda: ["effects"] + FONT  # noqa: E731
     hidden = lambda: ["effects"] + FONT + [["hide", "yes"]]  # noqa: E731
 
@@ -69,25 +70,20 @@ def xiao_symbol():
              (8, "D7", "bidirectional")]
     for i, (num, n, kind) in enumerate(right):
         pins.append(pin(num, n, kind, 15.24, -2.54 * i, 180))
-    top = [(15, "MTDI"), (16, "MTDO"), (17, "EN"), (18, "GND"), (19, "MTMS"), (20, "MTCK"),
-           (21, "BOOT"), (22, "3V3")]
-    for i, (num, n) in enumerate(top):
-        kind = "power_in" if n == "GND" else "passive"
-        pins.append(pin(num, n, kind, -8.89 + 2.54 * i, 15.24, 270))
     pins.append(pin(23, "VBAT", "passive", -2.54, -22.86, 90))
     pins.append(pin(24, "GND", "power_in", 2.54, -22.86, 90))
     name = "XIAO_ESP32C6"
     sym = ["symbol", Q(name), ["pin_names", ["offset", "1.016"]], ["exclude_from_sim", "no"],
            ["in_bom", "yes"], ["on_board", "yes"],
-           ["property", Q("Reference"), Q("U"), ["at", "-12.7", "17.78", "0"], eff()],
+           ["property", Q("Reference"), Q("U"), ["at", "-12.7", "3.81", "0"], eff()],
            ["property", Q("Value"), Q("XIAO-ESP32-C6"), ["at", "0", "-25.4", "0"], eff()],
            ["property", Q("Footprint"), Q(XIAO_FP), ["at", "0", "0", "0"], hidden()],
            ["property", Q("Datasheet"), Q("https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/"),
             ["at", "0", "0", "0"], hidden()],
-           ["property", Q("Description"), Q("Seeed Studio XIAO ESP32-C6 (pads 15-24 on the underside)"),
+           ["property", Q("Description"), Q("Seeed Studio XIAO ESP32-C6, castellated; battery pads 23/24 on the underside"),
             ["at", "0", "0", "0"], hidden()],
            ["symbol", Q(name + "_0_1"),
-            ["rectangle", ["start", "-12.7", "12.7"], ["end", "12.7", "-20.32"],
+            ["rectangle", ["start", "-12.7", "2.54"], ["end", "12.7", "-20.32"],
              ["stroke", ["width", "0.254"], ["type", "default"]], ["fill", ["type", "background"]]]],
            ["symbol", Q(name + "_1_1")] + pins]
     return ["kicad_symbol_lib", ["version", "20231120"], ["generator", Q("ffx_gen_schematics")],
@@ -203,7 +199,7 @@ class Sheet:
             self.used.append(lib_id)
 
     def place(self, lib_id, ref, value, x, y, r=0, dnp=False, footprint="", hide_value=False, fields=(),
-              ref_at=None, val_at=None):
+              ref_at=None, val_at=None, in_bom=True):
         self._use(lib_id)
         footprint = footprint or DEFAULT_FP.get(lib_id, "")
         p = Part(self, lib_id, ref, value, x, y, r)
@@ -232,7 +228,7 @@ class Sheet:
             pref = prop("Reference", ref, ref_at, hide=ref.startswith("#"))
             pval = prop("Value", value, val_at, hide=hide_value)
         node = ["symbol", ["lib_id", Q(lib_id)], ["at", fmt(x), fmt(y), str(r)], ["unit", "1"],
-                ["exclude_from_sim", "no"], ["in_bom", "no" if ref.startswith("#") else "yes"],
+                ["exclude_from_sim", "no"], ["in_bom", "yes" if in_bom and not ref.startswith("#") else "no"],
                 ["on_board", "no" if ref.startswith("#") else "yes"], ["dnp", "yes" if dnp else "no"],
                 ["uuid", self.mkuuid("sym", ref)], pref, pval,
                 prop("Footprint", footprint, hide=True), prop("Datasheet", "", hide=True)]
@@ -342,21 +338,20 @@ class Sheet:
         with open(path, "w") as f:
             f.write(sexpr.dump(doc) + "\n")
         base = os.path.splitext(path)[0]
-        with open(base + ".kicad_pro", "w") as f:
-            json.dump({"meta": {"filename": os.path.basename(base) + ".kicad_pro", "version": 3}}, f, indent=2)
+        if not os.path.exists(base + ".kicad_pro"):  # KiCad keeps board rules here: never clobber
+            with open(base + ".kicad_pro", "w") as f:
+                json.dump({"meta": {"filename": os.path.basename(base) + ".kicad_pro", "version": 3}}, f, indent=2)
         with open(os.path.join(os.path.dirname(path), "sym-lib-table"), "w") as f:
             f.write('(sym_lib_table\n  (version 7)\n  (lib (name "ff-expander")(type "KiCad")'
                     '(uri "${KIPRJMOD}/../lib/ff-expander.kicad_sym")(options "")(descr "ff-expander symbols"))\n)\n')
         with open(os.path.join(os.path.dirname(path), "fp-lib-table"), "w") as f:
-            f.write('(fp_lib_table\n  (version 7)\n  (lib (name "Seeed_Studio_XIAO_Series")(type "KiCad")'
-                    '(uri "${KIPRJMOD}/../lib/Seeed_Studio_XIAO_Series.pretty")(options "")(descr "Seeed XIAO (vendored)"))\n)\n')
+            f.write('(fp_lib_table\n  (version 7)\n  (lib (name "ff-expander")(type "KiCad")'
+                    '(uri "${KIPRJMOD}/../lib/ff-expander.pretty")(options "")(descr "ff-expander footprints"))\n)\n')
 
 
 # XIAO-ESP32-C6-SMD pin numbers
 X = {"D0": 1, "D1": 2, "D2": 3, "D3": 4, "D4": 5, "D5": 6, "D6": 7, "D7": 8, "D8": 9, "D9": 10,
-     "D10": 11, "3V3": 12, "GND": 13, "VBUS": 14, "MTDI": 15, "MTDO": 16, "EN": 17, "GND2": 18,
-     "MTMS": 19, "MTCK": 20, "BOOT": 21, "3V3_2": 22, "VBAT": 23, "GND3": 24}
-XIAO_UNUSED_PADS = ["MTDI", "MTDO", "EN", "MTMS", "MTCK", "BOOT", "3V3_2"]
+     "D10": 11, "3V3": 12, "GND": 13, "VBUS": 14, "VBAT": 23, "GND3": 24}
 # 74HC165 pin numbers for parallel inputs A..H (= D0..D7)
 HC165_IN = [11, 12, 13, 14, 3, 4, 5, 6]
 
@@ -388,10 +383,9 @@ def build_rx(libs):
                  ref_at=(35.56, 157.48), val_at=(35.56, 160.02))
     out_pin = ["D0", "D1", "D2", "D3", "D4", "D5", "D10", "D7", "D8", "D9"]  # button n -> pad
     s.nets(u3, {X[p]: "OUT%d" % n for n, p in enumerate(out_pin)})
-    s.nets(u3, {X["D6"]: None, X["3V3"]: None, X["GND2"]: "GND", X["GND3"]: "GND", X["VBAT"]: None})
+    s.nets(u3, {X["D6"]: None, X["3V3"]: None, X["GND3"]: "GND", X["VBAT"]: None})
     s.net(u3, X["VBUS"], "+5V")
     s.net(u3, X["GND"], "GND")
-    s.nets(u3, {X[p]: None for p in XIAO_UNUSED_PADS})
 
     # --- per-button: 1k series + 10k pull-up --------------------------------
     for n in range(10):
@@ -462,10 +456,9 @@ def build_tx(libs):
                  ref_at=(35.56, 157.48), val_at=(35.56, 160.02))
     btn_pin = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10"]  # button n -> pad
     s.nets(u1, {X[p]: "BTN%d" % n for n, p in enumerate(btn_pin)})
-    s.nets(u1, {X["D0"]: "VBAT_SENSE", X["VBUS"]: None, X["GND2"]: "GND", X["GND3"]: "GND", X["VBAT"]: "VBAT"})
+    s.nets(u1, {X["D0"]: "VBAT_SENSE", X["VBUS"]: None, X["GND3"]: "GND", X["VBAT"]: "VBAT"})
     s.net(u1, X["GND"], "GND")
     s.net(u1, X["3V3"], "+3V3")
-    s.nets(u1, {X[p]: None for p in XIAO_UNUSED_PADS})
 
     # --- battery sense (future) --------------------------------------------
     r21 = s.place("Device:R", "R21", "470k", 30.48, 190.5, dnp=True)
@@ -494,6 +487,10 @@ def build_tx(libs):
     j2 = s.place("Connector_Generic:Conn_01x11", "J2", "WHEEL_BUTTONS", 304.8, 81.28)
     s.nets(j2, {str(n + 1): "SW%d" % n for n in range(10)})
     s.net(j2, "11", "GND")
+    for i in range(4):
+        s.place("Mechanical:MountingHole", "H%d" % (i + 1), "M2", 297.18 + i * 12.7, 160.02,
+                footprint="MountingHole:MountingHole_2.2mm_M2", in_bom=False)
+    s.text("H1-H4: M2 mounting holes, 45 x 25 mm pattern.", 289.56, 170.18)
     s.text("Wheel buttons: each between SWn and GND.\nButtons 0/1 (D1/D2) wake the TX from deep sleep.",
            289.56, 116.84)
     return s

@@ -4,3 +4,6 @@ fp-info-cache
 _autosave-*
 *.lck
 __pycache__/
+drc.rpt
+*.dsn
+*.ses
