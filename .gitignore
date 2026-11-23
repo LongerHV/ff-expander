@@ -1,2 +1,9 @@
 .envrc
 .direnv
+.pio
+.vscode
+sdkconfig.tx
+sdkconfig.rx
+sdkconfig.tx.old
+sdkconfig.rx.old
+__pycache__
