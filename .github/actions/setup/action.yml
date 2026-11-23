@@ -8,15 +8,19 @@ runs:
   using: composite
   steps:
     # The dev shell (KiCad) plus ~2 GB of PlatformIO packages and the cache
-    # archive overflow the runner's disk; drop preinstalled SDKs we never use.
-    - name: Free disk space
+    # archive can overflow small runners (~14 GB free on private-repo runners);
+    # if space is short, drop preinstalled SDKs we never use (takes ~1.5 min).
+    - name: Free disk space if needed
       if: inputs.platformio == 'true'
       shell: bash
       run: |
-        df -h /
-        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup \
-          /opt/hostedtoolcache/CodeQL /usr/share/swift /usr/local/share/powershell
-        df -h /
+        free_gb=$(df --output=avail -BG / | tail -1 | tr -dc '0-9')
+        echo "free: ${free_gb} GB"
+        if (( free_gb < 20 )); then
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup \
+            /opt/hostedtoolcache/CodeQL /usr/share/swift /usr/local/share/powershell
+          df -h /
+        fi
     # PlatformIO from nixpkgs runs in a bubblewrap FHS sandbox, which needs
     # unprivileged user namespaces (restricted by AppArmor on Ubuntu 24.04).
     - name: Allow unprivileged user namespaces
