@@ -19,7 +19,7 @@ runs:
           experimental-features = nix-command flakes
     - name: Cache PlatformIO packages
       if: inputs.platformio == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.platformio
         key: platformio-${{ runner.os }}-${{ hashFiles('platformio.ini', 'flake.lock') }}
