@@ -47,3 +47,8 @@ Board MACs (pairing) and serial ports are set in `include/ffx_config.h` and
 TX: `p N` / `r N` press/release simulated button N, `m MASK` set all simulated
 buttons, `mute MS` stop transmitting, `s` stats, `sleep`, `reboot`.
 RX: `s` link stats. RX logs every output change as `RX t=… btn=0x… link=up|down`.
+
+## License
+
+MIT — see [LICENSE](LICENSE). This covers everything in the repository: the
+firmware, tools, documentation, and the schematics and PCB design files.
