@@ -137,3 +137,8 @@ Footprints are assigned in the schematics. Passives are 0805.
 | JST XH B6B-XH-A | 6-pin | 1 | RX XDRIVE SPI |
 | JST XH B11B-XH-A | 11-pin | 1 | TX buttons |
 | 1000 mAh protected LiPo | | 1 | TX |
+
+---
+
+© 2026 Michał Mieszczak. Licensed under CERN-OHL-S-2.0 (see
+`hardware/LICENSE`). Source: https://github.com/LongerHV/ff-expander

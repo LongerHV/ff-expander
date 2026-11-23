@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """Generate the ff-expander KiCad schematics (rx/ and tx/).
 
 Every connection is a short wire stub from a pin to a net label or power
@@ -20,8 +21,9 @@ import sexpr  # noqa: E402
 from sexpr import Q  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LOCAL_LIBS = {"Seeed_Studio_XIAO_Series": os.path.join(HERE, "lib", "Seeed_Studio_XIAO_Series.kicad_sym")}
-XIAO = "Seeed_Studio_XIAO_Series:XIAO-ESP32-C6-SMD"
+OWN_LIB = os.path.join(HERE, "lib", "ff-expander.kicad_sym")
+LOCAL_LIBS = {"ff-expander": OWN_LIB}
+XIAO = "ff-expander:XIAO_ESP32C6"
 XIAO_FP = "Seeed_Studio_XIAO_Series:XIAO-ESP32-C6-SMD"
 XH = {2: "B2B", 6: "B6B", 11: "B11B"}
 DEFAULT_FP = {
@@ -37,12 +39,59 @@ POWER_NETS = {"GND": "power:GND", "+3V3": "power:+3V3", "+5V": "power:+5V"}
 STUB = 2.54
 FONT = [["font", ["size", "1.27", "1.27"]]]
 
+REPO = "https://github.com/LongerHV/ff-expander"
+NOTICE = "(c) 2026 Michal Mieszczak. CERN-OHL-S-2.0. Source: " + REPO
+
 _ns = uuidlib.UUID("6f1c3c56-1d1a-4d7e-9a43-ffe0ffe0ffe0")
 
 
 def fmt(v):
     v = round(v, 4)
     return str(int(v)) if v == int(v) else repr(v)
+
+
+def xiao_symbol():
+    """Our own XIAO ESP32-C6 symbol. Pin numbers match Seeed's
+    XIAO-ESP32-C6-SMD footprint (1-14 edge, 15-22 top pads, 23-24 battery)."""
+    eff = lambda: ["effects"] + FONT  # noqa: E731
+    hidden = lambda: ["effects"] + FONT + [["hide", "yes"]]  # noqa: E731
+
+    def pin(num, name, kind, x, y, a):
+        return ["pin", kind, "line", ["at", fmt(x), fmt(y), str(a)], ["length", "2.54"],
+                ["name", Q(name), eff()], ["number", Q(str(num)), eff()]]
+
+    pins = []
+    left = ["D0", "D1", "D2", "D3", "D4", "D5", "D6"]  # pins 1..7, top to bottom
+    for i, n in enumerate(left):
+        pins.append(pin(i + 1, n, "bidirectional", -15.24, -2.54 * i, 0))
+    right = [(14, "VBUS", "passive"), (13, "GND", "power_in"), (12, "3V3", "power_out"),
+             (11, "D10", "bidirectional"), (10, "D9", "bidirectional"), (9, "D8", "bidirectional"),
+             (8, "D7", "bidirectional")]
+    for i, (num, n, kind) in enumerate(right):
+        pins.append(pin(num, n, kind, 15.24, -2.54 * i, 180))
+    top = [(15, "MTDI"), (16, "MTDO"), (17, "EN"), (18, "GND"), (19, "MTMS"), (20, "MTCK"),
+           (21, "BOOT"), (22, "3V3")]
+    for i, (num, n) in enumerate(top):
+        kind = "power_in" if n == "GND" else "passive"
+        pins.append(pin(num, n, kind, -8.89 + 2.54 * i, 15.24, 270))
+    pins.append(pin(23, "VBAT", "passive", -2.54, -22.86, 90))
+    pins.append(pin(24, "GND", "power_in", 2.54, -22.86, 90))
+    name = "XIAO_ESP32C6"
+    sym = ["symbol", Q(name), ["pin_names", ["offset", "1.016"]], ["exclude_from_sim", "no"],
+           ["in_bom", "yes"], ["on_board", "yes"],
+           ["property", Q("Reference"), Q("U"), ["at", "-12.7", "17.78", "0"], eff()],
+           ["property", Q("Value"), Q("XIAO-ESP32-C6"), ["at", "0", "-25.4", "0"], eff()],
+           ["property", Q("Footprint"), Q(XIAO_FP), ["at", "0", "0", "0"], hidden()],
+           ["property", Q("Datasheet"), Q("https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/"),
+            ["at", "0", "0", "0"], hidden()],
+           ["property", Q("Description"), Q("Seeed Studio XIAO ESP32-C6 (pads 15-24 on the underside)"),
+            ["at", "0", "0", "0"], hidden()],
+           ["symbol", Q(name + "_0_1"),
+            ["rectangle", ["start", "-12.7", "12.7"], ["end", "12.7", "-20.32"],
+             ["stroke", ["width", "0.254"], ["type", "default"]], ["fill", ["type", "background"]]]],
+           ["symbol", Q(name + "_1_1")] + pins]
+    return ["kicad_symbol_lib", ["version", "20231120"], ["generator", Q("ffx_gen_schematics")],
+            ["generator_version", Q("1.0")], sym]
 
 
 def _find_symdir():
@@ -280,8 +329,10 @@ class Sheet:
     def write(self, path):
         tb = ["title_block", ["title", Q(self.title)], ["date", Q("2026-11-23")], ["rev", Q("A")],
               ["company", Q("ff-expander")]]
-        for i, c in enumerate(self.comments, 1):
-            tb.append(["comment", str(i), Q(c)])
+        # KiCad prints comment 1 at the bottom: number them so they read top-down
+        for i, c in enumerate(self.comments):
+            tb.append(["comment", str(len(self.comments) - i), Q(c)])
+        self.text(NOTICE, 302.26, 248.92)
         doc = ["kicad_sch", ["version", "20250114"], ["generator", Q("ffx_gen_schematics")],
                ["generator_version", Q("1.0")], ["uuid", self.uuid], ["paper", Q("A3")], tb,
                ["lib_symbols"] + [self.libs.get(l) for l in self.used]]
@@ -294,8 +345,8 @@ class Sheet:
         with open(base + ".kicad_pro", "w") as f:
             json.dump({"meta": {"filename": os.path.basename(base) + ".kicad_pro", "version": 3}}, f, indent=2)
         with open(os.path.join(os.path.dirname(path), "sym-lib-table"), "w") as f:
-            f.write('(sym_lib_table\n  (version 7)\n  (lib (name "Seeed_Studio_XIAO_Series")(type "KiCad")'
-                    '(uri "${KIPRJMOD}/../lib/Seeed_Studio_XIAO_Series.kicad_sym")(options "")(descr "Seeed XIAO (vendored)"))\n)\n')
+            f.write('(sym_lib_table\n  (version 7)\n  (lib (name "ff-expander")(type "KiCad")'
+                    '(uri "${KIPRJMOD}/../lib/ff-expander.kicad_sym")(options "")(descr "ff-expander symbols"))\n)\n')
         with open(os.path.join(os.path.dirname(path), "fp-lib-table"), "w") as f:
             f.write('(fp_lib_table\n  (version 7)\n  (lib (name "Seeed_Studio_XIAO_Series")(type "KiCad")'
                     '(uri "${KIPRJMOD}/../lib/Seeed_Studio_XIAO_Series.pretty")(options "")(descr "Seeed XIAO (vendored)"))\n)\n')
@@ -311,10 +362,10 @@ HC165_IN = [11, 12, 13, 14, 3, 4, 5, 6]
 
 
 def build_rx(libs):
-    s = Sheet(libs, "ff-expander-rx", "ff-expander RX (base): XIAO ESP32-C6 -> 2x 74HC165 -> XDRIVE",
-              ["Failsafe: pull-ups hold every 165 input at 'released' (high) whenever the ESP is not driving.",
+    s = Sheet(libs, "ff-expander-rx", "ff-expander RX (base)",
+              ["Failsafe: pull-ups hold every 165 input 'released' (high) unless the ESP drives it.",
                "165s + pull-ups run from the XDRIVE 3.3 V, so a dead XIAO reads as 'all released'.",
-               "XIAO runs from the XDRIVE 5 V via D1; 1k series resistors limit back-powering when only USB powers it.",
+               "XIAO runs from the XDRIVE 5 V via D1. 1k series resistors limit back-powering.",
                "D6 (GPIO16, UART0 TX, toggled by boot ROM) is NOT used; button 6 is on D10."])
 
     # --- power: XDRIVE 5 V -> Schottky -> XIAO VBUS -------------------------
@@ -334,7 +385,7 @@ def build_rx(libs):
 
     # --- XIAO --------------------------------------------------------------
     u3 = s.place(XIAO, "U3", "XIAO-ESP32-C6", 50.8, 132.08, footprint=XIAO_FP,
-                 ref_at=(40.64, 156.21), val_at=(40.64, 158.75))
+                 ref_at=(35.56, 157.48), val_at=(35.56, 160.02))
     out_pin = ["D0", "D1", "D2", "D3", "D4", "D5", "D10", "D7", "D8", "D9"]  # button n -> pad
     s.nets(u3, {X[p]: "OUT%d" % n for n, p in enumerate(out_pin)})
     s.nets(u3, {X["D6"]: None, X["3V3"]: None, X["GND2"]: "GND", X["GND3"]: "GND", X["VBAT"]: None})
@@ -389,7 +440,7 @@ def build_rx(libs):
 
 
 def build_tx(libs):
-    s = Sheet(libs, "ff-expander-tx", "ff-expander TX (wheel): XIAO ESP32-C6 + LiPo + 10 buttons",
+    s = Sheet(libs, "ff-expander-tx", "ff-expander TX (wheel)",
               ["Buttons switch to GND. External 10k pull-ups + 10 nF filter against motor noise and",
                "eager-debounce false triggers; 1k series for ESD and to protect D6 (UART0 TX at boot).",
                "D1/D2 are the deep-sleep wake buttons (LP GPIOs).",
@@ -401,7 +452,6 @@ def build_tx(libs):
     s.net(j1, "2", "GND")
     s.flag("GND", 86.36, 33.02)
     s.flag("VBAT", 99.06, 33.02)
-    s.flag("+3V3", 111.76, 33.02)
     s.text("Protected 1S LiPo (PCM), JST XH. Check polarity: lead colours\nare not standard. "
            "No power switch: idle -> deep sleep.\n"
            "U1 pads 23/24 (VBAT/GND) are under the module: give them\n"
@@ -409,7 +459,7 @@ def build_tx(libs):
 
     # --- XIAO --------------------------------------------------------------
     u1 = s.place(XIAO, "U1", "XIAO-ESP32-C6", 50.8, 132.08, footprint=XIAO_FP,
-                 ref_at=(40.64, 156.21), val_at=(40.64, 158.75))
+                 ref_at=(35.56, 157.48), val_at=(35.56, 160.02))
     btn_pin = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10"]  # button n -> pad
     s.nets(u1, {X[p]: "BTN%d" % n for n, p in enumerate(btn_pin)})
     s.nets(u1, {X["D0"]: "VBAT_SENSE", X["VBUS"]: None, X["GND2"]: "GND", X["GND3"]: "GND", X["VBAT"]: "VBAT"})
@@ -450,6 +500,8 @@ def build_tx(libs):
 
 
 def main():
+    with open(OWN_LIB, "w") as f:
+        f.write(sexpr.dump(xiao_symbol()) + "\n")
     libs = Libs()
     build_rx(libs).write(os.path.join(HERE, "rx", "ff-expander-rx.kicad_sch"))
     build_tx(libs).write(os.path.join(HERE, "tx", "ff-expander-tx.kicad_sch"))

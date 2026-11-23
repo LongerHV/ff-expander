@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """Minimal KiCad s-expression reader/writer."""
 import re
 

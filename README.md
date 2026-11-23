@@ -50,5 +50,10 @@ RX: `s` link stats. RX logs every output change as `RX t=… btn=0x… link=up|d
 
 ## License
 
-MIT — see [LICENSE](LICENSE). This covers everything in the repository: the
-firmware, tools, documentation, and the schematics and PCB design files.
+- **Firmware, tools and scripts** (including `hardware/*.py`): MIT — see
+  [LICENSE](LICENSE).
+- **Hardware design** (`hardware/` KiCad files, `hardware/lib/ff-expander.kicad_sym`,
+  `docs/hardware.md`): CERN Open Hardware Licence v2 – Strongly Reciprocal
+  (CERN-OHL-S-2.0) — see [hardware/LICENSE](hardware/LICENSE).
+- **Third-party footprints** in `hardware/lib/Seeed_Studio_XIAO_Series.pretty/`:
+  © Seeed Studio, CC BY-SA 4.0 — see [hardware/lib/README.md](hardware/lib/README.md).
