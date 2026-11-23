@@ -50,10 +50,11 @@ def fmt(v):
     return str(int(v)) if v == int(v) else repr(v)
 
 
-def xiao_symbol():
+def xiao_symbol(battery=True):
     """Our own XIAO ESP32-C6 symbol: 1-14 castellated edge pins, 23/24 the
     battery pads on the underside (same numbering as Seeed's footprint). The
-    underside JTAG/boot pads (15-22) are omitted: not hand-solderable."""
+    underside JTAG/boot pads (15-22) are omitted: not hand-solderable.
+    battery=False: variant without 23/24, for boards powered from 5 V."""
     eff = lambda: ["effects"] + FONT  # noqa: E731
     hidden = lambda: ["effects"] + FONT + [["hide", "yes"]]  # noqa: E731
 
@@ -70,24 +71,32 @@ def xiao_symbol():
              (8, "D7", "bidirectional")]
     for i, (num, n, kind) in enumerate(right):
         pins.append(pin(num, n, kind, 15.24, -2.54 * i, 180))
-    pins.append(pin(23, "VBAT", "passive", -2.54, -22.86, 90))
-    pins.append(pin(24, "GND", "power_in", 2.54, -22.86, 90))
-    name = "XIAO_ESP32C6"
+    if battery:
+        pins.append(pin(23, "VBAT", "passive", -2.54, -22.86, 90))
+        pins.append(pin(24, "GND", "power_in", 2.54, -22.86, 90))
+    name = "XIAO_ESP32C6" + ("" if battery else "_NoBat")
+    bottom = "-20.32" if battery else "-17.78"
     sym = ["symbol", Q(name), ["pin_names", ["offset", "1.016"]], ["exclude_from_sim", "no"],
            ["in_bom", "yes"], ["on_board", "yes"],
            ["property", Q("Reference"), Q("U"), ["at", "-12.7", "3.81", "0"], eff()],
            ["property", Q("Value"), Q("XIAO-ESP32-C6"), ["at", "0", "-25.4", "0"], eff()],
-           ["property", Q("Footprint"), Q(XIAO_FP), ["at", "0", "0", "0"], hidden()],
+           ["property", Q("Footprint"), Q(XIAO_FP + ("" if battery else "_NoBat")), ["at", "0", "0", "0"], hidden()],
            ["property", Q("Datasheet"), Q("https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/"),
             ["at", "0", "0", "0"], hidden()],
-           ["property", Q("Description"), Q("Seeed Studio XIAO ESP32-C6, castellated; battery pads 23/24 on the underside"),
+           ["property", Q("Description"), Q("Seeed Studio XIAO ESP32-C6, castellated" +
+                                           ("; battery pads 23/24 on the underside" if battery else
+                                            "; battery pads unused")),
             ["at", "0", "0", "0"], hidden()],
            ["symbol", Q(name + "_0_1"),
-            ["rectangle", ["start", "-12.7", "2.54"], ["end", "12.7", "-20.32"],
+            ["rectangle", ["start", "-12.7", "2.54"], ["end", "12.7", bottom],
              ["stroke", ["width", "0.254"], ["type", "default"]], ["fill", ["type", "background"]]]],
            ["symbol", Q(name + "_1_1")] + pins]
+    return sym
+
+
+def symbol_lib():
     return ["kicad_symbol_lib", ["version", "20231120"], ["generator", Q("ffx_gen_schematics")],
-            ["generator_version", Q("1.0")], sym]
+            ["generator_version", Q("1.0")], xiao_symbol(True), xiao_symbol(False)]
 
 
 def _find_symdir():
@@ -379,11 +388,11 @@ def build_rx(libs):
     s.flag("+5V", 73.66, 73.66)
 
     # --- XIAO --------------------------------------------------------------
-    u3 = s.place(XIAO, "U3", "XIAO-ESP32-C6", 50.8, 132.08, footprint=XIAO_FP,
+    u3 = s.place(XIAO + "_NoBat", "U3", "XIAO-ESP32-C6", 50.8, 132.08, footprint=XIAO_FP + "_NoBat",
                  ref_at=(35.56, 157.48), val_at=(35.56, 160.02))
     out_pin = ["D0", "D1", "D2", "D3", "D4", "D5", "D10", "D7", "D8", "D9"]  # button n -> pad
     s.nets(u3, {X[p]: "OUT%d" % n for n, p in enumerate(out_pin)})
-    s.nets(u3, {X["D6"]: None, X["3V3"]: None, X["GND3"]: "GND", X["VBAT"]: None})
+    s.nets(u3, {X["D6"]: None, X["3V3"]: None})
     s.net(u3, X["VBUS"], "+5V")
     s.net(u3, X["GND"], "GND")
 
@@ -416,6 +425,10 @@ def build_rx(libs):
     s.nets(c5, {"1": "+3V3", "2": "GND"})
     s.text("C4 at U1, C5 at U2 (pin 16 -> pin 8, as close as possible).\nC3 where +3V3 enters the board.",
            317.5, 76.2)
+
+    for i in range(4):
+        s.place("Mechanical:MountingHole", "H%d" % (i + 1), "M2", 297.18 + i * 12.7, 236.22,
+                footprint="MountingHole:MountingHole_2.2mm_M2", in_bom=False)
 
     # --- XDRIVE header ------------------------------------------------------
     r21 = s.place("Device:R", "R21", "47", 345.44, 114.3, r=90)
@@ -498,7 +511,7 @@ def build_tx(libs):
 
 def main():
     with open(OWN_LIB, "w") as f:
-        f.write(sexpr.dump(xiao_symbol()) + "\n")
+        f.write(sexpr.dump(symbol_lib()) + "\n")
     libs = Libs()
     build_rx(libs).write(os.path.join(HERE, "rx", "ff-expander-rx.kicad_sch"))
     build_tx(libs).write(os.path.join(HERE, "tx", "ff-expander-tx.kicad_sch"))

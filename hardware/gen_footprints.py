@@ -98,8 +98,9 @@ class FP:
             fh.write(sexpr.dump(doc) + "\n")
 
 
-def xiao():
-    fp = FP("XIAO_ESP32C6_HandSolder")
+def xiao(battery=True):
+    """battery=False: no slot / bridge pads (board powered from 5 V)."""
+    fp = FP("XIAO_ESP32C6_HandSolder" + ("" if battery else "_NoBat"))
     hw, hh = W / 2, H / 2
     pad_len = PAD_IN + PAD_OUT
     pad_cx = hw + (PAD_OUT - PAD_IN) / 2
@@ -111,13 +112,14 @@ def xiao():
     sx0, sy0, sx1, sy1 = SLOT
     # Assembly: solder short wires to the XIAO's BAT pads first, thread them
     # through the slot, solder the module, then the wires to these pads.
-    py = sy0 - 0.35 - BRIDGE_H / 2
-    for num, x in zip(("23", "24"), BRIDGE_X):
-        fp.pad(num, x, py, BRIDGE_W, BRIDGE_H, ["B.Cu", "B.Mask"])
-    fp.text("B.SilkS", "+", BRIDGE_X[0], py - BRIDGE_H / 2 - 0.9, 1.0, mirror=True)
-    fp.text("B.SilkS", "-", BRIDGE_X[1], py - BRIDGE_H / 2 - 0.9, 1.0, mirror=True)
-    fp.text("B.SilkS", "BAT", (BRIDGE_X[0] + BRIDGE_X[1]) / 2, py - BRIDGE_H / 2 - 0.9, 0.8, mirror=True)
-    fp.rect("Edge.Cuts", sx0, sy0, sx1, sy1, 0.1)
+    if battery:
+        py = sy0 - 0.35 - BRIDGE_H / 2
+        for num, x in zip(("23", "24"), BRIDGE_X):
+            fp.pad(num, x, py, BRIDGE_W, BRIDGE_H, ["B.Cu", "B.Mask"])
+        fp.text("B.SilkS", "+", BRIDGE_X[0], py - BRIDGE_H / 2 - 0.9, 1.0, mirror=True)
+        fp.text("B.SilkS", "-", BRIDGE_X[1], py - BRIDGE_H / 2 - 0.9, 1.0, mirror=True)
+        fp.text("B.SilkS", "BAT", (BRIDGE_X[0] + BRIDGE_X[1]) / 2, py - BRIDGE_H / 2 - 0.9, 0.8, mirror=True)
+        fp.rect("Edge.Cuts", sx0, sy0, sx1, sy1, 0.1)
 
     # keep-outs
     # stop short of the castellated pads so tracks can reach them
@@ -137,10 +139,12 @@ def xiao():
     fp.line("F.SilkS", -hw - PAD_OUT - 0.4, -3 * PITCH - 1.0, -hw - PAD_OUT - 0.4, -3 * PITCH + 1.0, 0.2)
     # courtyard: pads + USB overhang (sides kept tight for the M2 holes)
     fp.rect("F.CrtYd", -hw - PAD_OUT, -hh - 1.75, hw + PAD_OUT, hh + 0.25)
-    fp.write("Seeed Studio XIAO ESP32-C6, hand-soldered flat. Slot under the battery pads; "
-             "bridge pads 23 (VBAT) / 24 (GND) on the bottom. Keep-outs under module and antenna.",
+    fp.write("Seeed Studio XIAO ESP32-C6, hand-soldered flat. " +
+             ("Slot under the battery pads; bridge pads 23 (VBAT) / 24 (GND) on the bottom. "
+              if battery else "Battery pads unused. ") + "Keep-outs under module and antenna.",
              "XIAO ESP32-C6 castellated hand-solder", (0, -hh - 3))
 
 
 if __name__ == "__main__":
-    xiao()
+    xiao(battery=True)
+    xiao(battery=False)

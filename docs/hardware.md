@@ -10,7 +10,7 @@ cd hardware
 nix shell nixpkgs#kicad-small nixpkgs#freerouting -c sh -c '
   python3 gen_footprints.py      # our XIAO footprint
   python3 gen_schematics.py      # rx/ and tx/ schematics
-  ./kicad-python.sh gen_pcb_tx.py  # TX board: place, autoroute, pour, DRC -> tx/drc.rpt
+  ./kicad-python.sh gen_pcb.py     # both boards: place, autoroute, pour, DRC -> */drc.rpt
 '
 ```
 
@@ -38,6 +38,20 @@ stop regenerating it.
   the right edge.
 - The battery-sense divider (R21/R22/C11, not fitted) is on the bottom, under
   the XIAO.
+
+## RX PCB
+
+2-layer, 54 × 31 mm. M2 holes (2.2 mm): two in the left corners, two at
+(44.4, 3) / (44.4, 28) mm, just inboard of the connector column.
+
+- XIAO soldered flat, USB-C overhanging the left short edge; same keep-outs as
+  TX. No battery slot (footprint and symbol variant `_NoBat`).
+- Rows B0–B9: 1k series + 10k pull-up per button, ordered to match the XIAO
+  pin order. The two 74HC165s are stacked next to them (U2 = buttons 8/9 on
+  top, U1 below), with their 100 nF caps between them.
+- Both XDRIVE connectors on the right edge: J1 (6-pin XH, pin 1 = GND at the
+  bottom, `GND MOSI MISO SCK GPIO6 3V3` printed on the back) and J2 (2-pin XH,
+  pin 1 = 5V). D1, C1 and C2 sit next to J2.
 
 Known constraints:
 
