@@ -1,0 +1,26 @@
+name: Set up dev shell
+description: Install Nix (the dev shell comes from flake.lock) and restore the PlatformIO cache
+inputs:
+  platformio:
+    description: Restore/save ~/.platformio (ESP toolchain, ESP-IDF)
+    default: "false"
+runs:
+  using: composite
+  steps:
+    # PlatformIO from nixpkgs runs in a bubblewrap FHS sandbox, which needs
+    # unprivileged user namespaces (restricted by AppArmor on Ubuntu 24.04).
+    - name: Allow unprivileged user namespaces
+      shell: bash
+      run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+    - uses: cachix/install-nix-action@v31
+      with:
+        github_access_token: ${{ github.token }}
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+    - name: Cache PlatformIO packages
+      if: inputs.platformio == 'true'
+      uses: actions/cache@v4
+      with:
+        path: ~/.platformio
+        key: platformio-${{ runner.os }}-${{ hashFiles('platformio.ini', 'flake.lock') }}
+        restore-keys: platformio-${{ runner.os }}-

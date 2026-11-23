@@ -1,3 +1,6 @@
+#include <stdio.h>
+
+#include "esp_app_desc.h"
 #include "platform.h"
 
 #if !(FFX_ROLE_TX ^ FFX_ROLE_RX)
@@ -7,6 +10,7 @@
 void role_main(void);
 
 void app_main(void) {
+    printf("INFO ff-expander %s\n", esp_app_get_description()->version);
     board_init();
     role_main();
 }

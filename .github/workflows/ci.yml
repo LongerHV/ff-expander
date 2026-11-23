@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    name: Lint and format
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup
+      - run: nix develop -c tools/lint.sh
+
+  firmware:
+    name: Firmware build and tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # firmware version comes from `git describe`
+      - uses: ./.github/actions/setup
+        with:
+          platformio: "true"
+      - name: Unit tests (host)
+        run: nix develop -c pio test -e native
+      - name: Build tx and rx
+        run: nix develop -c pio run -e tx -e rx
+
+  hardware:
+    name: Hardware checks
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup
+      - run: nix develop -c tools/check_hardware.sh

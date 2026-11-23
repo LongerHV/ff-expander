@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Build and publish
+    needs: checks
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Validate tag is semver
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          semver='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$'
+          if [[ ! "$TAG" =~ $semver ]]; then
+            echo "::error::Tag '$TAG' is not a semver version (vMAJOR.MINOR.PATCH[-PRERELEASE])"
+            exit 1
+          fi
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # firmware version comes from `git describe`
+      - uses: ./.github/actions/setup
+        with:
+          platformio: "true"
+      - name: Build firmware and export gerbers
+        env:
+          TAG: ${{ github.ref_name }}
+        run: nix develop -c tools/release.sh "$TAG" dist
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          flags=()
+          [[ "$TAG" == *-* ]] && flags+=(--prerelease)
+          gh release create "$TAG" --verify-tag --title "ff-expander $TAG" --generate-notes "${flags[@]}" dist/*

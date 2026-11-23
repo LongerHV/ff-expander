@@ -37,7 +37,24 @@ pio test -e native          # unit tests for lib/ffx_core
 pio run -e tx -t upload     # wheel board
 pio run -e rx -t upload     # base board
 python3 tools/link_test.py  # end-to-end test with both boards on USB
+tools/lint.sh               # clang-format, ruff, nixfmt, actionlint
+tools/check_hardware.sh     # generators in sync, ERC, DRC
 ```
+
+CI (`.github/workflows/ci.yml`) runs the lint, unit tests, firmware build and
+hardware checks on every push to `master` and on pull requests.
+
+### Releases
+
+Push a semver tag (`v1.2.3`, or `v1.2.3-rc.1` for a pre-release). The release
+workflow reruns CI, then publishes a GitHub release with:
+
+- `ff-expander-<tag>-tx.bin`, `ff-expander-<tag>-rx.bin`: complete flash
+  images, written at offset 0:
+  `esptool --chip esp32c6 write-flash 0x0 ff-expander-<tag>-tx.bin`
+- `ff-expander-<tag>-{tx,rx}-gerbers.zip`: gerbers and drill files.
+
+The same artifacts build locally with `tools/release.sh <version> dist`.
 
 Board MACs (pairing) and serial ports are set in `include/ffx_config.h` and
 `platformio.ini`.
