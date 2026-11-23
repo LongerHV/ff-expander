@@ -29,6 +29,7 @@ NOTICE = "CERN-OHL-S-2.0  github.com/LongerHV/ff-expander"
 COPYRIGHT = "(c) 2026 Michal Mieszczak. CERN-OHL-S-2.0. Source: https://github.com/LongerHV/ff-expander"
 
 mm = pcbnew.FromMM
+TRACK_W = {"Default": 0.25, "Power": 0.4}   # mm, per net class
 
 
 def P(x, y):
@@ -192,12 +193,12 @@ def setup_rules(board, power_nets):
     ns = ds.m_NetSettings
     dflt = ns.GetDefaultNetclass()
     dflt.SetClearance(mm(0.2))
-    dflt.SetTrackWidth(mm(0.25))
+    dflt.SetTrackWidth(mm(TRACK_W["Default"]))
     dflt.SetViaDiameter(mm(0.6))
     dflt.SetViaDrill(mm(0.3))
     pwr = pcbnew.NETCLASS("Power")
     pwr.SetClearance(mm(0.2))
-    pwr.SetTrackWidth(mm(0.4))
+    pwr.SetTrackWidth(mm(TRACK_W["Power"]))
     pwr.SetViaDiameter(mm(0.7))
     pwr.SetViaDrill(mm(0.35))
     ns.SetNetclass("Power", pwr)
@@ -336,6 +337,9 @@ def build(spec, route=True):
     board.BuildConnectivity()
     if route:
         autoroute(board, spec.name)
+        fixed = fix_widths(board, spec.power_nets)
+        if fixed:
+            print("%s: widened %d necked track(s) to net class width" % (spec.name, len(fixed)))
     for layer in (pcbnew.F_Cu, pcbnew.B_Cu):
         add_zone(board, nets["GND"], layer, spec.W, spec.H)
     pcbnew.SaveBoard(pcb, board)
@@ -355,17 +359,46 @@ def autoroute(board, name):
             sys.exit("DSN export failed")
         env = {k: v for k, v in os.environ.items() if k not in ("DISPLAY", "WAYLAND_DISPLAY")}
         env["JAVA_TOOL_OPTIONS"] = "-Djava.awt.headless=true"
-        cmd = [exe, "-de", dsn, "-do", ses, "-mp", "200", "--gui.enabled=false"]
+        cmd = [exe, "-de", dsn, "-do", ses, "--router.autorouter.max_passes=200", "--gui.enabled=false",
+               "--router.automatic_neckdown=false"]
         res = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=900)
         if not os.path.exists(ses):
             print(res.stdout[-3000:], res.stderr[-3000:])
             sys.exit("freerouting produced no session file")
+        dbg = os.environ.get("FFX_ROUTE_DEBUG")   # dir: keep DSN/SES/log for inspection
+        if dbg:
+            os.makedirs(dbg, exist_ok=True)
+            for f in (dsn, ses):
+                shutil.copy(f, dbg)
+            with open(os.path.join(dbg, name + ".log"), "w") as fh:
+                fh.write(" ".join(cmd) + "\n" + res.stdout + res.stderr)
         if not pcbnew.ImportSpecctraSES(board, ses):
             sys.exit("SES import failed")
 
 
-def unrouted(spec):
-    return open(paths(spec)[2]).read().count("[unconnected_items]")
+def fix_widths(board, power_nets):
+    """Set every track to its net class width.
+
+    Freerouting 2.5 necks some tracks down at pads (to 75 % of the width,
+    0.187 mm for 0.25 mm tracks: below our 0.2 mm minimum) even with
+    automatic_neckdown off. The final DRC checks that the widened tracks
+    still clear everything; if not, the board is routed again."""
+    fixed = []
+    for t in board.GetTracks():
+        if t.GetClass() != "PCB_TRACK":   # skip vias and arcs
+            continue
+        want = mm(TRACK_W["Power" if t.GetNetname() in power_nets else "Default"])
+        if t.GetWidth() != want:
+            fixed.append((t.GetNetname(), pcbnew.ToMM(t.GetWidth())))
+            t.SetWidth(want)
+    return fixed
+
+
+def drc_errors(spec):
+    """Error-severity DRC items, ignoring library-table lookups (environment-
+    dependent: footprints are embedded in the board anyway)."""
+    rpt = open(paths(spec)[2]).read().split("\n[")
+    return sum(1 for item in rpt[1:] if "; error" in item and not item.startswith("lib_footprint"))
 
 
 def main():
@@ -375,11 +408,11 @@ def main():
         spec = BOARDS[name]
         for attempt in range(1, 6):
             build(spec, route=route)
-            if not route or not unrouted(spec):
+            if not route or not drc_errors(spec):
                 break
-            print("%s: attempt %d left %d connection(s) unrouted, retrying" % (name, attempt, unrouted(spec)))
+            print("%s: attempt %d left %d DRC error(s), retrying" % (name, attempt, drc_errors(spec)))
         else:
-            sys.exit("%s: could not route every connection" % name)
+            sys.exit("%s: could not get a DRC-clean routing" % name)
 
 
 if __name__ == "__main__":
