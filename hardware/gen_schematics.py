@@ -5,14 +5,12 @@
 Every connection is a short wire stub from a pin to a net label or power
 symbol, so the netlist is defined entirely by the tables below.
 
-Usage: python3 gen_schematics.py   (e.g. `nix shell nixpkgs#kicad-small -c python3 gen_schematics.py`)
+Usage: python3 gen_schematics.py   (in the dev shell: `nix develop`)
 The stock KiCad symbol libraries are found automatically; override with KICAD_SYMBOL_DIR.
 """
 import json
 import math
 import os
-import re
-import shutil
 import sys
 import uuid as uuidlib
 
@@ -100,19 +98,11 @@ def symbol_lib():
 
 
 def _find_symdir():
-    """Locate the stock symbol libraries (system install or the nix kicad wrapper)."""
+    """Locate the stock symbol libraries of a system KiCad install."""
     for d in ("/usr/share/kicad/symbols", "/usr/local/share/kicad/symbols",
               "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols"):
         if os.path.isdir(d):
             return d
-    cli = shutil.which("kicad-cli")
-    if cli:
-        try:
-            m = re.search(r"(/nix/store/[^'\":\s]*kicad-symbols[^'\":\s]*/share/kicad/symbols)", open(cli).read())
-            if m:
-                return m.group(1)
-        except (OSError, UnicodeDecodeError):
-            pass
     return None
 
 
@@ -120,7 +110,7 @@ class Libs:
     def __init__(self):
         self.symdir = os.environ.get("KICAD_SYMBOL_DIR") or os.environ.get("KICAD10_SYMBOL_DIR") or _find_symdir()
         if not self.symdir:
-            sys.exit("KiCad symbol libraries not found: set KICAD_SYMBOL_DIR")
+            sys.exit("KiCad symbol libraries not found: run in `nix develop` or set KICAD_SYMBOL_DIR")
         self.cache = {}
 
     def _lib(self, nick):

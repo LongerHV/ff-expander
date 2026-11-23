@@ -7,12 +7,11 @@ outline, autoroute with Freerouting (retrying until everything is routed),
 pour GND on both layers, then let KiCad refill zones and run DRC
 (report: <board>/drc.rpt).
 
-Run (needs KiCad's pcbnew module and freerouting on PATH):
-    nix shell nixpkgs#kicad-small nixpkgs#freerouting -c ./kicad-python.sh gen_pcb.py [tx] [rx]
+Run in the dev shell (`nix develop`: KiCad's pcbnew module, kicad-cli, freerouting):
+    python3 gen_pcb.py [tx] [rx]
 Options: --no-route  place only (keep ratsnest, no tracks)
 """
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -156,18 +155,7 @@ def stock_fp_dir():
     for d in ("/usr/share/kicad/footprints", "/usr/local/share/kicad/footprints"):
         if os.path.isdir(d):
             return d
-    cli = shutil.which("kicad-cli")
-    if cli:
-        m = re.search(r"(/nix/store/[^'\":\s]*kicad-footprints[^'\":\s/]*/share/kicad/footprints)",
-                      open(os.path.realpath(cli), errors="ignore").read())
-        if m:
-            return m.group(1)
-        out = subprocess.run(["nix-store", "-qR", os.path.dirname(os.path.dirname(os.path.realpath(cli)))],
-                             capture_output=True, text=True).stdout.split()
-        for p in out:
-            if "kicad-footprints" in p and os.path.isdir(p + "/share/kicad/footprints"):
-                return p + "/share/kicad/footprints"
-    sys.exit("KiCad footprint libraries not found: set KICAD_FOOTPRINT_DIR")
+    sys.exit("KiCad footprint libraries not found: run in `nix develop` or set KICAD_FOOTPRINT_DIR")
 
 
 def paths(spec):
@@ -360,7 +348,7 @@ def build(spec, route=True):
 def autoroute(board, name):
     exe = shutil.which("freerouting")
     if not exe:
-        sys.exit("freerouting not on PATH (nix shell nixpkgs#freerouting)")
+        sys.exit("freerouting not on PATH (run in `nix develop`)")
     with tempfile.TemporaryDirectory() as td:
         dsn, ses = os.path.join(td, name + ".dsn"), os.path.join(td, name + ".ses")
         if not pcbnew.ExportSpecctraDSN(board, dsn):
