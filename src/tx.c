@@ -8,8 +8,8 @@
 
 #include "driver/gpio.h"
 #include "driver/rtc_io.h"
-#include "esp_sleep.h"
 #include "esp_random.h"
+#include "esp_sleep.h"
 #include "esp_system.h"
 #include "ffx_config.h"
 #include "ffx_core.h"

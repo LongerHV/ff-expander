@@ -70,8 +70,8 @@ bool ffx_link_poll(ffx_link_t *l, uint32_t now_ms);
 uint16_t ffx_levels_to_buttons(uint32_t levels, const uint8_t *pins, size_t n, bool active_low);
 
 // Button mask -> GPIO bits to set high / clear low.
-void ffx_buttons_to_levels(uint16_t buttons, const uint8_t *pins, size_t n, bool active_low,
-                           uint32_t *set_mask, uint32_t *clear_mask);
+void ffx_buttons_to_levels(uint16_t buttons, const uint8_t *pins, size_t n, bool active_low, uint32_t *set_mask,
+                           uint32_t *clear_mask);
 
 #ifdef __cplusplus
 }

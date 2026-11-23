@@ -48,9 +48,7 @@ uint16_t ffx_debounce_update(ffx_debounce_t *d, uint16_t raw, uint32_t now_ms) {
 
 // ---------------------------------------------------------- link monitor --
 
-void ffx_link_init(ffx_link_t *l, uint32_t timeout_ms) {
-    *l = (ffx_link_t){.timeout_ms = timeout_ms};
-}
+void ffx_link_init(ffx_link_t *l, uint32_t timeout_ms) { *l = (ffx_link_t){.timeout_ms = timeout_ms}; }
 
 bool ffx_link_on_packet(ffx_link_t *l, uint16_t seq, uint32_t now_ms) {
     if (l->up) {
@@ -85,13 +83,15 @@ uint16_t ffx_levels_to_buttons(uint32_t levels, const uint8_t *pins, size_t n, b
     return buttons;
 }
 
-void ffx_buttons_to_levels(uint16_t buttons, const uint8_t *pins, size_t n, bool active_low,
-                           uint32_t *set_mask, uint32_t *clear_mask) {
+void ffx_buttons_to_levels(uint16_t buttons, const uint8_t *pins, size_t n, bool active_low, uint32_t *set_mask,
+                           uint32_t *clear_mask) {
     uint32_t high = 0, low = 0;
     for (size_t i = 0; i < n && i < 16; i++) {
         bool pressed = buttons & (1u << i);
-        if (pressed != active_low) high |= 1u << pins[i];
-        else low |= 1u << pins[i];
+        if (pressed != active_low)
+            high |= 1u << pins[i];
+        else
+            low |= 1u << pins[i];
     }
     *set_mask = high;
     *clear_mask = low;

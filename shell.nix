@@ -12,9 +12,12 @@ pkgs.mkShell {
   packages = with pkgs; [
     platformio # build, flash, unit tests (fetches its own ESP toolchain + OpenOCD)
     python
-    clang-tools # clangd / clang-format for editors
-    kicad # schematics/PCB editor, kicad-cli (netlist, DRC)
+    clang-tools # clangd, clang-format
+    kicad # schematics/PCB editor, kicad-cli (netlist, ERC, DRC, gerbers)
     freerouting # autorouter used by hardware/gen_pcb.py
+    ruff # Python lint + format
+    nixfmt # Nix format
+    actionlint # GitHub workflow lint
   ];
 
   # Stock libraries for the hardware generators

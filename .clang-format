@@ -1,0 +1,7 @@
+# C formatting for firmware, lib and tests (ESP-IDF sources are not ours).
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 120
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true

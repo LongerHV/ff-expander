@@ -11,6 +11,7 @@ Run in the dev shell (`nix develop`: KiCad's pcbnew module, kicad-cli, freerouti
     python3 gen_pcb.py [tx] [rx]
 Options: --no-route  place only (keep ratsnest, no tracks)
 """
+
 import os
 import shutil
 import subprocess
@@ -24,12 +25,12 @@ import sexpr  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OWN_FP = {"ff-expander": os.path.join(HERE, "lib", "ff-expander.pretty")}
-ORIGIN = (100.0, 80.0)     # where boards sit on the KiCad page
+ORIGIN = (100.0, 80.0)  # where boards sit on the KiCad page
 NOTICE = "CERN-OHL-S-2.0  github.com/LongerHV/ff-expander"
 COPYRIGHT = "(c) 2026 Michal Mieszczak. CERN-OHL-S-2.0. Source: https://github.com/LongerHV/ff-expander"
 
 mm = pcbnew.FromMM
-TRACK_W = {"Default": 0.25, "Power": 0.4}   # mm, per net class
+TRACK_W = {"Default": 0.25, "Power": 0.4}  # mm, per net class
 
 
 def P(x, y):
@@ -39,6 +40,7 @@ def P(x, y):
 # ---- board specs ---------------------------------------------------------------
 # placement: ref -> (x, y, rotation, side) in board mm; side "B" = bottom.
 # texts: (string, x, y, layer, size, mirror)
+
 
 class TX:
     name, title = "tx", "ff-expander TX (wheel)"
@@ -52,17 +54,17 @@ class TX:
     @classmethod
     def placement(cls):
         dx = cls.DX
-        pl = {"U1": (10.5, 16.0, 90, "F")}   # XIAO: USB-C overhangs the left edge
+        pl = {"U1": (10.5, 16.0, 90, "F")}  # XIAO: USB-C overhangs the left edge
         holes = [(3.5 + dx, 3.5), (48.5 + dx, 3.5), (3.5 + dx, 28.5), (48.5 + dx, 28.5)]
         for n, (x, y) in enumerate(holes):
             pl["H%d" % (n + 1)] = (x, y, 0, "F")
         # per-button rows (top row = button 9): 10k pull-up | 10 nF | 1k series
         for n in range(10):
             y = 3.6 + 2.75 * (9 - n)
-            pl["R%d" % (1 + n)] = (26.95 + dx, y, 0, "F")     # +3V3 | BTN
-            pl["C%d" % (1 + n)] = (31.15 + dx, y, 0, "F")     # BTN | GND
-            pl["R%d" % (11 + n)] = (35.35 + dx, y, 0, "F")    # BTN | SW
-        pl["J2"] = (41.1 + dx, 28.5, 90, "F")   # buttons: pin 1 (SW0) at the bottom
+            pl["R%d" % (1 + n)] = (26.95 + dx, y, 0, "F")  # +3V3 | BTN
+            pl["C%d" % (1 + n)] = (31.15 + dx, y, 0, "F")  # BTN | GND
+            pl["R%d" % (11 + n)] = (35.35 + dx, y, 0, "F")  # BTN | SW
+        pl["J2"] = (41.1 + dx, 28.5, 90, "F")  # buttons: pin 1 (SW0) at the bottom
         pl["J1"] = (48.0 + dx, 17.25, 90, "F")  # battery at the right edge
         # battery-sense divider (DNP), standing upright in the band next to the
         # antenna keep-out, clear of the strips the button tracks use
@@ -79,12 +81,21 @@ class TX:
         t += [("B%d" % n, 23.6 + dx, 3.6 + 2.75 * (9 - n), F, 0.8, False) for n in range(10)]
         t += [("VBAT", 26.2, 8.4, F, 0.8, False), ("sense", 26.2, 23.2, F, 0.8, False)]
         t += [("ff-expander TX  rev A", 31.0 + dx, 30.9, B, 0.8, True), (NOTICE, 24.0 + dx, 1.2, B, 0.8, True)]
-        for k, line in enumerate(("XIAO BAT +/-: wire first,", "thread wires through slot,",
-                                  "solder XIAO, then wires", "to the +/- pads here.")):
+        for k, line in enumerate(
+            (
+                "XIAO BAT +/-: wire first,",
+                "thread wires through slot,",
+                "solder XIAO, then wires",
+                "to the +/- pads here.",
+            )
+        ):
             t.append((line, 31.8 + dx, 7.0 + 1.3 * k, B, 0.8, True))
         t += [("%d" % n, 44.6 + dx, 28.5 - 2.5 * n, B, 0.8, True) for n in range(10)]
-        t += [("G", 44.6 + dx, 3.5, B, 0.8, True), ("+", 50.7 + dx, 17.25, B, 1.0, True),
-              ("-", 50.7 + dx, 14.75, B, 1.0, True)]
+        t += [
+            ("G", 44.6 + dx, 3.5, B, 0.8, True),
+            ("+", 50.7 + dx, 17.25, B, 1.0, True),
+            ("-", 50.7 + dx, 14.75, B, 1.0, True),
+        ]
         return t
 
 
@@ -110,23 +121,23 @@ class RX:
             pl["H%d" % (n + 1)] = (x, y, 0, "F")
         for k, n in enumerate(cls.ROWS):
             y = cls.row_y(k)
-            pl["R%d" % (11 + n)] = (27.0, y, 0, "F")     # 1k:  OUTn | BTNn
-            pl["R%d" % (1 + n)] = (31.2, y, 180, "F")    # 10k: BTNn | +3V3
+            pl["R%d" % (11 + n)] = (27.0, y, 0, "F")  # 1k:  OUTn | BTNn
+            pl["R%d" % (1 + n)] = (31.2, y, 180, "F")  # 10k: BTNn | +3V3
         # shift registers: U2 (buttons 8, 9) on top, U1 below; U2 turned so
         # both VCC pins face the gap where the decoupling caps sit
         pl["U2"] = (37.6, 8.2, 180, "F")
         pl["U1"] = (37.6, 22.8, 0, "F")
         pl["C5"] = (37.6, 14.45, 0, "F")
         pl["C4"] = (37.6, 16.55, 0, "F")
-        pl["C3"] = (37.6, 1.5, 0, "F")       # +3V3 bulk
-        pl["R21"] = (37.6, 29.6, 0, "F")     # 47R in MISO
+        pl["C3"] = (37.6, 1.5, 0, "F")  # +3V3 bulk
+        pl["R21"] = (37.6, 29.6, 0, "F")  # 47R in MISO
         # 5 V input: D1 + caps, next to J2
         pl["D1"] = (44.4, 11.0, 90, "F")
         pl["C1"] = (44.4, 17.4, 90, "F")
         pl["C2"] = (44.4, 21.6, 90, "F")
         # connectors stacked on the right edge
-        pl["J1"] = (49.96, 17.5, 90, "F")    # XDRIVE SPI, pin 1 (GND) at the bottom
-        pl["J2"] = (49.96, 26.3, 90, "F")    # XDRIVE 5 V
+        pl["J1"] = (49.96, 17.5, 90, "F")  # XDRIVE SPI, pin 1 (GND) at the bottom
+        pl["J2"] = (49.96, 26.3, 90, "F")  # XDRIVE 5 V
         return pl
 
     @classmethod
@@ -167,8 +178,11 @@ def paths(spec):
 def read_netlist(sch):
     with tempfile.TemporaryDirectory() as td:
         net = os.path.join(td, "board.net")
-        subprocess.run(["kicad-cli", "sch", "export", "netlist", "--format", "kicadsexpr", "-o", net, sch],
-                       check=True, capture_output=True)
+        subprocess.run(
+            ["kicad-cli", "sch", "export", "netlist", "--format", "kicadsexpr", "-o", net, sch],
+            check=True,
+            capture_output=True,
+        )
         root = sexpr.parse(open(net).read())
     comps = {}
     for c in sexpr.find(sexpr.find(root, "components")[0], "comp"):
@@ -344,8 +358,10 @@ def build(spec, route=True):
         add_zone(board, nets["GND"], layer, spec.W, spec.H)
     pcbnew.SaveBoard(pcb, board)
     # final zone fill + DRC by KiCad itself (the in-process fill can be stale)
-    subprocess.run(["kicad-cli", "pcb", "drc", "--refill-zones", "--save-board", "--severity-all",
-                    "-o", rpt, pcb], capture_output=True)
+    subprocess.run(
+        ["kicad-cli", "pcb", "drc", "--refill-zones", "--save-board", "--severity-all", "-o", rpt, pcb],
+        capture_output=True,
+    )
     print("wrote", pcb, "- DRC report:", rpt)
 
 
@@ -359,13 +375,21 @@ def autoroute(board, name):
             sys.exit("DSN export failed")
         env = {k: v for k, v in os.environ.items() if k not in ("DISPLAY", "WAYLAND_DISPLAY")}
         env["JAVA_TOOL_OPTIONS"] = "-Djava.awt.headless=true"
-        cmd = [exe, "-de", dsn, "-do", ses, "--router.autorouter.max_passes=200", "--gui.enabled=false",
-               "--router.automatic_neckdown=false"]
+        cmd = [
+            exe,
+            "-de",
+            dsn,
+            "-do",
+            ses,
+            "--router.autorouter.max_passes=200",
+            "--gui.enabled=false",
+            "--router.automatic_neckdown=false",
+        ]
         res = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=900)
         if not os.path.exists(ses):
             print(res.stdout[-3000:], res.stderr[-3000:])
             sys.exit("freerouting produced no session file")
-        dbg = os.environ.get("FFX_ROUTE_DEBUG")   # dir: keep DSN/SES/log for inspection
+        dbg = os.environ.get("FFX_ROUTE_DEBUG")  # dir: keep DSN/SES/log for inspection
         if dbg:
             os.makedirs(dbg, exist_ok=True)
             for f in (dsn, ses):
@@ -385,7 +409,7 @@ def fix_widths(board, power_nets):
     still clear everything; if not, the board is routed again."""
     fixed = []
     for t in board.GetTracks():
-        if t.GetClass() != "PCB_TRACK":   # skip vias and arcs
+        if t.GetClass() != "PCB_TRACK":  # skip vias and arcs
             continue
         want = mm(TRACK_W["Power" if t.GetNetname() in power_nets else "Default"])
         if t.GetWidth() != want:

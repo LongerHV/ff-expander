@@ -188,8 +188,10 @@ def main():
 
     print("== latency (host: TX command written -> RX log line read)")
     lat.sort()
-    print(f"  n={len(lat)} min {lat[0]:.2f}  median {statistics.median(lat):.2f}  "
-          f"p95 {lat[int(len(lat) * 0.95) - 1]:.2f}  max {lat[-1]:.2f} ms")
+    print(
+        f"  n={len(lat)} min {lat[0]:.2f}  median {statistics.median(lat):.2f}  "
+        f"p95 {lat[int(len(lat) * 0.95) - 1]:.2f}  max {lat[-1]:.2f} ms"
+    )
     print("  (includes two USB hops; see round trip above)")
 
     print("== rapid changes (200 masks, 5 ms apart)")
@@ -202,8 +204,10 @@ def main():
     t, _ = rx.wait_for(rx_state(btn=final), 1.0)
     r.check(t is not None, f"RX settles on final mask 0x{final:03x}")
     after = rx_stats(rx)
-    print(f"  received {after['received'] - before['received']}, lost {after['lost'] - before['lost']}, "
-          f"stale {after['stale'] - before['stale']}")
+    print(
+        f"  received {after['received'] - before['received']}, lost {after['lost'] - before['lost']}, "
+        f"stale {after['stale'] - before['stale']}"
+    )
     set_mask(tx, rx, 0)
 
     print("== failsafe: TX goes silent while buttons held")

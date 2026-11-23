@@ -14,10 +14,10 @@
 #define FFX_PHY_RATE WIFI_PHY_RATE_12M
 
 // ---- Timing ---------------------------------------------------------------
-#define FFX_SCAN_PERIOD_MS 1     // TX button sampling
-#define FFX_DEBOUNCE_LOCK_MS 5   // per-button lockout after an edge
-#define FFX_HEARTBEAT_MS 20      // TX sends at least this often
-#define FFX_LINK_TIMEOUT_MS 100  // RX releases all buttons after this silence
+#define FFX_SCAN_PERIOD_MS 1    // TX button sampling
+#define FFX_DEBOUNCE_LOCK_MS 5  // per-button lockout after an edge
+#define FFX_HEARTBEAT_MS 20     // TX sends at least this often
+#define FFX_LINK_TIMEOUT_MS 100 // RX releases all buttons after this silence
 #ifndef FFX_IDLE_SLEEP_MS
 #define FFX_IDLE_SLEEP_MS (10u * 60u * 1000u) // TX deep sleep after no activity; 0 = never
 #endif
