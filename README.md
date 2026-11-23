@@ -17,7 +17,7 @@ Design notes: `docs/superpowers/specs/2026-11-23-ff-expander-design.md`.
 | 3 | D4 | D3 → chip 1 D |
 | 4 | D5 | D4 → chip 1 E |
 | 5 | D6 | D5 → chip 1 F |
-| 6 | D7 | D6 → chip 1 G |
+| 6 | D7 | D10 → chip 1 G |
 | 7 | D8 | D7 → chip 1 H |
 | 8 | D9 | D8 → chip 2 A |
 | 9 | D10 | D9 → chip 2 B |

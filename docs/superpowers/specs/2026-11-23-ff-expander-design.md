@@ -47,9 +47,10 @@ GPIO14 = antenna select (low = on-board antenna), GPIO15 = user LED (active low)
 D0 is kept free (it is one of the few ADC pins) for a future battery-voltage
 divider. D1/D2 (GPIO1/2) are LP GPIOs and therefore the deep-sleep wake buttons.
 
-**RX (base):** button outputs 0–9 on D0–D9 → 165 parallel inputs (chip 1 A–H =
+**RX (base):** button outputs 0–9 on D0–D5, D10, D7–D9 → 165 parallel inputs (chip 1 A–H =
 buttons 0–7, chip 2 A–B = buttons 8–9; unused 165 inputs tied to the
-"released" level). D10 free. The 165s must run at 3.3 V (ESP outputs are 3.3 V;
+"released" level). D6 unused: it is UART0 TX, which the boot ROM drives at
+every reset. The 165s must run at 3.3 V (ESP outputs are 3.3 V;
 74HC at 5 V would be marginal). Output polarity is a build option, default
 **pressed = low** (like a pull-up button box); released is the failsafe level.
 

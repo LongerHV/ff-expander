@@ -33,8 +33,9 @@
 // Deep-sleep wake buttons: must be LP GPIOs (0..7) -> D1, D2.
 #define FFX_TX_WAKE_PINS_MASK ((1ULL << 1) | (1ULL << 2))
 
-// RX: outputs 0..9 on D0..D9 -> 74HC165 parallel inputs.
-#define FFX_RX_PINS {0, 1, 2, 21, 22, 23, 16, 17, 19, 20}
+// RX: outputs 0..9 on D0..D5, D10, D7..D9 -> 74HC165 parallel inputs.
+// D6 (GPIO16, UART0 TX) is skipped: the boot ROM drives it at every reset.
+#define FFX_RX_PINS {0, 1, 2, 21, 22, 23, 18, 17, 19, 20}
 // 1: pressed = low, released = high (like a pull-up button box).
 #define FFX_RX_PRESSED_LOW 1
 
