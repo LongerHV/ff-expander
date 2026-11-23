@@ -120,6 +120,11 @@ def xiao(battery=True):
         fp.text("B.SilkS", "-", BRIDGE_X[1], py - BRIDGE_H / 2 - 0.9, 1.0, mirror=True)
         fp.text("B.SilkS", "BAT", (BRIDGE_X[0] + BRIDGE_X[1]) / 2, py - BRIDGE_H / 2 - 0.9, 0.8, mirror=True)
         fp.rect("Edge.Cuts", sx0, sy0, sx1, sy1, 0.1)
+        # no tracks/vias within 0.35 mm of the slot (autorouters don't know
+        # the copper-to-edge rule); pours keep their own clearance
+        m = 0.35
+        fp.keepout(["F.Cu", "B.Cu"], [(sx0 - m, sy0 - m), (sx1 + m, sy0 - m), (sx1 + m, sy1 + m), (sx0 - m, sy1 + m)],
+                   pour=False)
 
     # keep-outs
     # stop short of the castellated pads so tracks can reach them

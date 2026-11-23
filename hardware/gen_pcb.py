@@ -42,39 +42,49 @@ def P(x, y):
 
 class TX:
     name, title = "tx", "ff-expander TX (wheel)"
-    W, H = 52.0, 32.0
+    # The XIAO side is 5 mm longer than the 45 x 25 hole pattern needs: the
+    # extra band between the antenna keep-out and the button rows holds the
+    # battery-sense divider. Everything right of the XIAO is offset by DX.
+    DX = 5.0
+    W, H = 52.0 + DX, 32.0
     power_nets = ["GND", "+3V3", "VBAT"]
 
     @classmethod
     def placement(cls):
+        dx = cls.DX
         pl = {"U1": (10.5, 16.0, 90, "F")}   # XIAO: USB-C overhangs the left edge
-        for n, (x, y) in enumerate(corners(cls.W, cls.H, 3.5, 3.5)):
+        holes = [(3.5 + dx, 3.5), (48.5 + dx, 3.5), (3.5 + dx, 28.5), (48.5 + dx, 28.5)]
+        for n, (x, y) in enumerate(holes):
             pl["H%d" % (n + 1)] = (x, y, 0, "F")
         # per-button rows (top row = button 9): 10k pull-up | 10 nF | 1k series
         for n in range(10):
             y = 3.6 + 2.75 * (9 - n)
-            pl["R%d" % (1 + n)] = (26.95, y, 0, "F")     # +3V3 | BTN
-            pl["C%d" % (1 + n)] = (31.15, y, 0, "F")     # BTN | GND
-            pl["R%d" % (11 + n)] = (35.35, y, 0, "F")    # BTN | SW
-        pl["J2"] = (41.1, 28.5, 90, "F")   # buttons: pin 1 (SW0) at the bottom
-        pl["J1"] = (48.0, 17.25, 90, "F")  # battery at the right edge
-        # battery-sense divider (DNP) on the bottom, under the XIAO next to D0
-        pl["R21"] = (6.5, 18.0, 0, "B")
-        pl["R22"] = (6.5, 20.6, 0, "B")
-        pl["C11"] = (6.5, 23.0, 0, "B")
+            pl["R%d" % (1 + n)] = (26.95 + dx, y, 0, "F")     # +3V3 | BTN
+            pl["C%d" % (1 + n)] = (31.15 + dx, y, 0, "F")     # BTN | GND
+            pl["R%d" % (11 + n)] = (35.35 + dx, y, 0, "F")    # BTN | SW
+        pl["J2"] = (41.1 + dx, 28.5, 90, "F")   # buttons: pin 1 (SW0) at the bottom
+        pl["J1"] = (48.0 + dx, 17.25, 90, "F")  # battery at the right edge
+        # battery-sense divider (DNP), standing upright in the band next to the
+        # antenna keep-out, clear of the strips the button tracks use
+        pl["C11"] = (26.2, 11.6, 90, "F")
+        pl["R21"] = (26.2, 15.8, 90, "F")
+        pl["R22"] = (26.2, 20.0, 90, "F")
         return pl
 
     @classmethod
     def texts(cls):
+        dx = cls.DX
         F, B = pcbnew.F_SilkS, pcbnew.B_SilkS
-        t = [(s, x, 1.3, F, 0.8, False) for x, s in ((26.95, "10k"), (31.15, "10n"), (35.35, "1k"))]
-        t += [("B%d" % n, 23.6, 3.6 + 2.75 * (9 - n), F, 0.8, False) for n in range(10)]
-        t += [("ff-expander TX  rev A", 31.0, 30.9, B, 0.8, True), (NOTICE, 24.0, 1.2, B, 0.8, True)]
+        t = [(s, x + dx, 1.3, F, 0.8, False) for x, s in ((26.95, "10k"), (31.15, "10n"), (35.35, "1k"))]
+        t += [("B%d" % n, 23.6 + dx, 3.6 + 2.75 * (9 - n), F, 0.8, False) for n in range(10)]
+        t += [("VBAT", 26.2, 8.4, F, 0.8, False), ("sense", 26.2, 23.2, F, 0.8, False)]
+        t += [("ff-expander TX  rev A", 31.0 + dx, 30.9, B, 0.8, True), (NOTICE, 24.0 + dx, 1.2, B, 0.8, True)]
         for k, line in enumerate(("XIAO BAT +/-: wire first,", "thread wires through slot,",
                                   "solder XIAO, then wires", "to the +/- pads here.")):
-            t.append((line, 31.8, 7.0 + 1.3 * k, B, 0.8, True))
-        t += [("%d" % n, 44.6, 28.5 - 2.5 * n, B, 0.8, True) for n in range(10)]
-        t += [("G", 44.6, 3.5, B, 0.8, True), ("+", 50.7, 17.25, B, 1.0, True), ("-", 50.7, 14.75, B, 1.0, True)]
+            t.append((line, 31.8 + dx, 7.0 + 1.3 * k, B, 0.8, True))
+        t += [("%d" % n, 44.6 + dx, 28.5 - 2.5 * n, B, 0.8, True) for n in range(10)]
+        t += [("G", 44.6 + dx, 3.5, B, 0.8, True), ("+", 50.7 + dx, 17.25, B, 1.0, True),
+              ("-", 50.7 + dx, 14.75, B, 1.0, True)]
         return t
 
 

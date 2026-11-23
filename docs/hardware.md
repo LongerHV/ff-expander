@@ -20,7 +20,9 @@ stop regenerating it.
 
 ## TX PCB
 
-2-layer, 52 × 32 mm, M2 holes (2.2 mm) on a 45 × 25 mm pattern.
+2-layer, 57 × 32 mm, M2 holes (2.2 mm) on a 45 × 25 mm pattern, centred
+3.5 mm from the top, bottom and right edges and 8.5 mm from the left (XIAO)
+edge. All parts are on the front except the battery bridge pads.
 
 - XIAO soldered flat, USB-C overhanging the left short edge (charging and
   flashing from outside).
@@ -36,8 +38,9 @@ stop regenerating it.
 - Button rows B0–B9 (10k pull-up, 10 nF, 1k series) next to J2 (11-pin XH,
   pin 1 = button 0 at the bottom, GND at the top). Battery J1 (2-pin XH) at
   the right edge.
-- The battery-sense divider (R21/R22/C11, not fitted) is on the bottom, under
-  the XIAO.
+- The battery-sense divider (R21/R22/C11, not fitted) stands upright on the
+  front, between the antenna keep-out and the button rows (silk "VBAT …
+  sense"). The board is 5 mm longer on the XIAO side to make room for it.
 
 ## RX PCB
 

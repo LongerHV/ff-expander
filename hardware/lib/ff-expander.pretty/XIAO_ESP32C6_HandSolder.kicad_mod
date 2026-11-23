@@ -6,7 +6,7 @@
 	(property "Reference" "REF**"
 		(at 0 -13.5 0)
 		(layer "F.SilkS")
-		(uuid "a3f2e108-f7fc-5f6d-9237-c2ccf8359131")
+		(uuid "4e67d5a2-3889-5f04-89a8-363facd71172")
 		(effects
 			(font
 				(size 1 1)
@@ -17,7 +17,7 @@
 	(property "Value" "XIAO_ESP32C6_HandSolder"
 		(at 0 0 0)
 		(layer "F.Fab")
-		(uuid "4e67d5a2-3889-5f04-89a8-363facd71172")
+		(uuid "cae148b8-38cf-55c5-aa0c-30486f75e16c")
 		(effects
 			(font
 				(size 1 1)
@@ -28,7 +28,7 @@
 	(property "Datasheet" ""
 		(at 0 0 0)
 		(layer "F.Fab")
-		(uuid "cae148b8-38cf-55c5-aa0c-30486f75e16c")
+		(uuid "7023bca0-bee0-57ba-aaac-fa4fa51672af")
 		(effects
 			(font
 				(size 1 1)
@@ -202,8 +202,39 @@
 	(zone
 		(net 0)
 		(net_name "")
-		(layers "F.Cu")
+		(layers "F.Cu" "B.Cu")
 		(uuid "d34bc1d5-28b9-582f-bd3c-d36a3d036a58")
+		(hatch edge 0.5)
+		(connect_pads
+			(clearance 0)
+		)
+		(min_thickness 0.25)
+		(filled_areas_thickness no)
+		(keepout
+			(tracks not_allowed)
+			(vias not_allowed)
+			(pads allowed)
+			(copperpour allowed)
+			(footprints allowed)
+		)
+		(fill
+			(thermal_gap 0.5)
+			(thermal_bridge_width 0.5)
+		)
+		(polygon
+			(pts
+				(xy -4.15 2.95)
+				(xy 3.15 2.95)
+				(xy 3.15 8.15)
+				(xy -4.15 8.15)
+			)
+		)
+	)
+	(zone
+		(net 0)
+		(net_name "")
+		(layers "F.Cu")
+		(uuid "9b8906fe-0c44-5d29-83b6-83edd8d1610b")
 		(hatch edge 0.5)
 		(connect_pads
 			(clearance 0)
@@ -234,7 +265,7 @@
 		(net 0)
 		(net_name "")
 		(layers "F.Cu" "B.Cu")
-		(uuid "9b8906fe-0c44-5d29-83b6-83edd8d1610b")
+		(uuid "abb64117-e5b5-549a-bf3b-1e1c06aa3d42")
 		(hatch edge 0.5)
 		(connect_pads
 			(clearance 0)
@@ -270,7 +301,7 @@
 		)
 		(fill no)
 		(layer "F.Fab")
-		(uuid "abb64117-e5b5-549a-bf3b-1e1c06aa3d42")
+		(uuid "626fbb1e-8b0b-51e1-8846-af8e1cec0762")
 	)
 	(fp_rect
 		(start -4.5 -12)
@@ -281,12 +312,12 @@
 		)
 		(fill no)
 		(layer "F.Fab")
-		(uuid "626fbb1e-8b0b-51e1-8846-af8e1cec0762")
+		(uuid "9cde1214-2638-5104-b42d-3bd8c6d38724")
 	)
 	(fp_text user "USB-C"
 		(at 0 -8.5 0)
 		(layer "F.Fab")
-		(uuid "9cde1214-2638-5104-b42d-3bd8c6d38724")
+		(uuid "2f0d848b-101d-5997-beed-0705945f6d5a")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -297,7 +328,7 @@
 	(fp_text user "ANT"
 		(at 4.5 9 0)
 		(layer "F.Fab")
-		(uuid "2f0d848b-101d-5997-beed-0705945f6d5a")
+		(uuid "1d176d47-5257-5e3f-97a1-92b89f661855")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -308,7 +339,7 @@
 	(fp_text user "${REFERENCE}"
 		(at 0 0 0)
 		(layer "F.Fab")
-		(uuid "1d176d47-5257-5e3f-97a1-92b89f661855")
+		(uuid "289a386f-a4f6-5a6f-8ba5-59b8f774cb9f")
 		(effects
 			(font
 				(size 1 1)
@@ -324,7 +355,7 @@
 			(type solid)
 		)
 		(layer "F.SilkS")
-		(uuid "289a386f-a4f6-5a6f-8ba5-59b8f774cb9f")
+		(uuid "06e014ff-b837-56ff-98b4-69d4c50e6a94")
 	)
 	(fp_line
 		(start -10.3 -8.62)
@@ -334,7 +365,7 @@
 			(type solid)
 		)
 		(layer "F.SilkS")
-		(uuid "06e014ff-b837-56ff-98b4-69d4c50e6a94")
+		(uuid "94624898-d432-5238-9608-30f44f651337")
 	)
 	(fp_rect
 		(start -9.9 -12.25)
@@ -345,6 +376,6 @@
 		)
 		(fill no)
 		(layer "F.CrtYd")
-		(uuid "94624898-d432-5238-9608-30f44f651337")
+		(uuid "a3f2e108-f7fc-5f6d-9237-c2ccf8359131")
 	)
 )
