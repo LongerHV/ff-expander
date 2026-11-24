@@ -6,7 +6,9 @@ output log over USB. Checks every button arrives, measures host-observed
 latency, verifies the failsafe (mute + TX reboot) releases all buttons, and
 reports packet loss.
 
-    python3 tools/link_test.py [--tx PORT] [--rx PORT]
+    python3 tools/link_test.py [--tx PORT] [--rx PORT] [--buttons N]
+
+Use --buttons 4 for the POC build (pio envs tx-poc / rx-poc).
 """
 
 import argparse
@@ -20,8 +22,6 @@ import time
 import serial
 
 BY_ID = "/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:B1:B9:{}-if00"
-NUM_BUTTONS = 10
-ALL = (1 << NUM_BUTTONS) - 1
 
 RX_LINE = re.compile(r"^RX t=\d+ btn=0x([0-9a-f]+) seq=\d+ link=(up|down)")
 STAT_LINE = re.compile(r"^STAT link=(\w+) btn=0x[0-9a-f]+ received=(\d+) lost=(\d+) stale=(\d+)")
@@ -147,8 +147,11 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--tx", default=BY_ID.format("84"))
     ap.add_argument("--rx", default=BY_ID.format("00"))
+    ap.add_argument("--buttons", type=int, default=10, help="FFX_NUM_BUTTONS of the flashed firmware")
     ap.add_argument("--soak", type=float, default=10.0, help="seconds of heartbeat-only soak")
     args = ap.parse_args()
+    num_buttons = args.buttons
+    all_mask = (1 << num_buttons) - 1
 
     tx, rx = Board("tx", args.tx), Board("rx", args.rx)
     r = Results()
@@ -173,14 +176,14 @@ def main():
 
     print("== every button, press and release")
     lat = []
-    for b in range(NUM_BUTTONS):
+    for b in range(num_buttons):
         down = set_mask(tx, rx, 1 << b)
         up = set_mask(tx, rx, 0)
         r.check(down is not None and up is not None, f"button {b} press/release reaches RX")
         lat += [x for x in (down, up) if x is not None]
 
     print("== patterns")
-    for mask in (ALL, 0x155, 0x2AA, 0x000):
+    for mask in (all_mask, 0x155 & all_mask, 0x2AA & all_mask, 0x000):
         x = set_mask(tx, rx, mask)
         r.check(x is not None, f"mask 0x{mask:03x} reaches RX")
         if x is not None:
@@ -198,9 +201,9 @@ def main():
     before = rx_stats(rx)
     rx.drain()
     for i in range(200):
-        tx.send(f"m 0x{(i * 37) & ALL:x}")
+        tx.send(f"m 0x{(i * 37) & all_mask:x}")
         time.sleep(0.005)
-    final = (199 * 37) & ALL
+    final = (199 * 37) & all_mask
     t, _ = rx.wait_for(rx_state(btn=final), 1.0)
     r.check(t is not None, f"RX settles on final mask 0x{final:03x}")
     after = rx_stats(rx)
@@ -211,14 +214,14 @@ def main():
     set_mask(tx, rx, 0)
 
     print("== failsafe: TX goes silent while buttons held")
-    set_mask(tx, rx, ALL)
+    set_mask(tx, rx, all_mask)
     rx.drain()
     t0 = tx.send("mute 400")
     t1, _ = rx.wait_for(rx_state(btn=0, link="down"), 1.0)
     r.check(t1 is not None, "RX releases all buttons when link is lost")
     if t1:
         print(f"  released {(t1 - t0) * 1000:.0f} ms after mute (timeout is 100 ms)")
-    t2, _ = rx.wait_for(rx_state(btn=ALL, link="up"), 1.0)
+    t2, _ = rx.wait_for(rx_state(btn=all_mask, link="up"), 1.0)
     r.check(t2 is not None, "RX restores held buttons when link returns")
 
     print("== failsafe: TX reboots while buttons held")
@@ -230,7 +233,7 @@ def main():
     t2, _ = rx.wait_for(rx_state(btn=0, link="up"), 5.0)
     r.check(t2 is not None, "link comes back after TX reboot")
     time.sleep(0.5)
-    r.check(set_mask(tx, rx, 0x200, timeout=2.0) is not None, "TX works after reboot")
+    r.check(set_mask(tx, rx, 1 << (num_buttons - 1), timeout=2.0) is not None, "TX works after reboot")
     set_mask(tx, rx, 0)
 
     print(f"== soak: {args.soak:.0f} s of heartbeats")

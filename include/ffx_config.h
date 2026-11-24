@@ -24,18 +24,28 @@
 
 // ---- Pins (XIAO pad -> GPIO) ----------------------------------------------
 // D0=0 D1=1 D2=2 D3=21 D4=22 D5=23 D6=16 D7=17 D8=19 D9=20 D10=18
+#if FFX_POC
+// Proof of concept (pio envs tx-poc / rx-poc): 4 buttons, RX pins wired
+// straight to XDRIVE GPIO inputs (1k series, XDRIVE internal pull-ups).
+#define FFX_NUM_BUTTONS 4
+// TX: buttons 0..3 on D1..D4, wired to GND.
+#define FFX_TX_PINS {1, 2, 21, 22}
+// RX: outputs 0..3 on D0..D3 -> XDRIVE GPIO inputs.
+#define FFX_RX_PINS {0, 1, 2, 21}
+#else
 #define FFX_NUM_BUTTONS 10
-
 // TX: buttons 0..9 on D1..D10, wired to GND (internal pull-ups).
 // D0 left free for a future battery-voltage divider (ADC).
 #define FFX_TX_PINS {1, 2, 21, 22, 23, 16, 17, 19, 20, 18}
+// RX: outputs 0..9 on D0..D5, D10, D7..D9 -> 74HC165 parallel inputs.
+// D6 (GPIO16, UART0 TX) is skipped: the boot ROM drives it at every reset.
+#define FFX_RX_PINS {0, 1, 2, 21, 22, 23, 18, 17, 19, 20}
+#endif
+
 #define FFX_TX_ACTIVE_LOW 1
 // Deep-sleep wake buttons: must be LP GPIOs (0..7) -> D1, D2.
 #define FFX_TX_WAKE_PINS_MASK ((1ULL << 1) | (1ULL << 2))
 
-// RX: outputs 0..9 on D0..D5, D10, D7..D9 -> 74HC165 parallel inputs.
-// D6 (GPIO16, UART0 TX) is skipped: the boot ROM drives it at every reset.
-#define FFX_RX_PINS {0, 1, 2, 21, 22, 23, 18, 17, 19, 20}
 // 1: pressed = low, released = high (like a pull-up button box).
 #define FFX_RX_PRESSED_LOW 1
 

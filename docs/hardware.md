@@ -153,6 +153,13 @@ Power:
   Unplug J1 for storage.
 - **Charging:** the on-board charger runs at ~100 mA, so a full charge takes
   many hours.
+- **No battery = phantom presses:** on USB with no battery attached, the
+  XIAO's charger oscillates (red charge LED lit) and couples spikes onto the
+  button wiring. Seen on the breadboard POC with internal pull-ups only: all
+  wired buttons read pressed for 5 ms (one debounce lockout) every ~170 ms,
+  gone as soon as the battery was plugged in. Keep a battery connected when
+  testing the wheel; the 10k/10 nF per button on the PCB should absorb it,
+  but verify that on USB without a battery.
 - **Battery sense (future, D0):** 470k / 470k divider plus 100 nF on the ADC
   node. 4.2 V reads as 2.1 V at ~4 µA continuous draw.
 

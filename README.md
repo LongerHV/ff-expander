@@ -29,6 +29,25 @@ Design notes: `docs/superpowers/specs/2026-11-23-ff-expander-design.md`.
   high. Power the 165s from **3.3 V**.
 - The RX user LED is lit while the link is up; the TX sleeps after 10 min idle.
 
+### Proof of concept (no PCBs)
+
+Envs `tx-poc` / `rx-poc` (`-DFFX_POC=1`) build a 4-button variant with the RX
+wired straight to XDRIVE GPIO inputs, no 74HC165s:
+
+| Button | TX pad (to GND) | RX pad → XDRIVE |
+|-------:|-----------------|-----------------|
+| 0 | D1 (wake) | D0 ─1k─► GPIO input |
+| 1 | D2 (wake) | D1 ─1k─► GPIO input |
+| 2 | D3 | D2 ─1k─► GPIO input |
+| 3 | D4 | D3 ─1k─► GPIO input |
+
+- XDRIVE inputs use their internal pull-ups, configured active-low. Check that
+  they read released (> ~2.3 V) while the XIAO is held in its bootloader;
+  otherwise add 10k pull-ups to 3V3.
+- Power: header +5V → Schottky (SS14 / 1N5817) → XIAO `5V`, plus GND. The
+  diode stops USB and the XDRIVE back-feeding each other.
+- `python3 tools/link_test.py --buttons 4`
+
 ## Build, flash, test
 
 ```sh

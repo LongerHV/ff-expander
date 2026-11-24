@@ -36,7 +36,7 @@ jobs:
       - name: Unit tests (host)
         run: nix develop -c pio test -e native
       - name: Build tx and rx
-        run: nix develop -c pio run -e tx -e rx
+        run: nix develop -c pio run -e tx -e rx -e tx-poc -e rx-poc
 
   hardware:
     name: Hardware checks
